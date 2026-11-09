@@ -229,32 +229,30 @@
    x960..992, the only vertical channel on the cover that cuts no glyph).
    The old value was a flat 63% of the sheet, which ran the dashed line
    straight through the lead paragraph and the body copy. */
-/* A fold is marked, not drawn. A dashed line down the full height of the sheet
-   puts ink exactly where the paper is about to bend, and it crosses every rule
-   it passes — the cover's foot rule and the sheet's own border both read as a
-   plus sign. A proof marks a fold the way it marks a trim: two short ticks at
-   the edges, one axis over from the crop marks. */
+/* The fold is drawn, not just marked. It was briefly reduced to two short
+   ticks, on the argument that a full-height rule crosses whatever it passes —
+   but that was an argument about the line's *position*, not its existence. The
+   old fold sat at a flat 63% of the sheet, which is the middle of the left
+   column; the line cut the lead and the body copy because it was in the wrong
+   place, and moving it to the gutter removes the only real collision.
+
+   Two insets keep a drawn rule from reading as part of the layout. The top one
+   clears the sheet's trim. The bottom one is larger and is measured, not
+   guessed: the cover foot's border-top sits at y 814 at every width, so
+   `bottom: 78px` ended the rule at 805.9 — 8px clear, which at 1x is a rule
+   that appears to stop just short of the foot rule and reads as a plus sign,
+   the exact defect the tick version existed to avoid. `bottom: 104px` puts the
+   end at 780, a clean 34px above it, and still 26px below the last glyph of
+   the label. */
 .fold {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 26px;
+  bottom: 104px;
   width: 1px;
+  border-left: 1px dashed var(--rule);
+  opacity: 0.9;
   pointer-events: none;
 }
-
-.fold::before,
-.fold::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 0;
-  height: 17px;
-  border-left: 1px dashed var(--rule);
-  opacity: 0.8;
-}
-
-.fold::before { top: 11px; }
-.fold::after { bottom: 11px; }
 
 /* The gutter is where the two columns stop and start, which is not a fixed
    distance from the right edge: the right column is 262px but the left one is
