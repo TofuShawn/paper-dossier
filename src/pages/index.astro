@@ -42,7 +42,21 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
         <div class="cv-left">
           <p class="t-micro" data-rev>Vol. {String(ALL.length).padStart(2, '0')} — Field notes</p>
 
-          <h1 class="t-cover" id="cover-title" data-rev style="--d:90ms">
+          <!--
+            `data-plate` carries the title a second time for the misregistration
+            layer: Terminal's skin draws `.t-cover::after { content: attr(data-plate) }`
+            offset by --mis-x/--mis-y, so the biggest type on the page is printed
+            twice, once in ink and once in cyan. Scoped out of the accessibility
+            tree by the pseudo-element being decoration only; every other skin
+            ignores the attribute entirely.
+          -->
+          <h1
+            class="t-cover"
+            id="cover-title"
+            data-rev
+            data-plate={SITE.title}
+            style="--d:90ms"
+          >
             {SITE.title}
           </h1>
 

@@ -29,8 +29,8 @@ const TICKER = [
   'SKIN CONTRACT OK',
   'REV 01',
   'SIGNAL #FFFA00',
-  'INK #EDEDED',
-  'GROUND #191919',
+  'INK #111110',
+  'SHEET #FCFBF7',
 ];
 
 /**
@@ -377,7 +377,12 @@ const RECORD: [string, string][] = [
           }
         }
 
-        var rgb = '178,210,232';
+        /* Two densities of one ink, not two hues. The console drew the pair in
+           pale blue and coral; on paper the colours are gone by decision, so the
+           pair is separated by *value* instead: the accent's deep tier for one
+           body and the raw yellow for the other. That is what a duotone print
+           does with a single plate — one ink, two screens. */
+        var rgb = '107,100,0';
 
         function draw(now) {
           var t = reduce ? 0 : now % 1e7;
@@ -401,7 +406,7 @@ const RECORD: [string, string][] = [
              drawn ellipse. Dashed, because a solid ring reads as another wire. */
           ctx.lineWidth = 1;
           ctx.setLineDash([2, 6]);
-          ctx.strokeStyle = 'rgba(237,237,237,0.26)';
+          ctx.strokeStyle = 'rgba(17,17,16,0.18)';
           [ORB_A * SEP, ORB_B * SEP].forEach(function (rad) {
             ctx.beginPath();
             for (var s = 0; s <= 180; s++) {
@@ -415,8 +420,8 @@ const RECORD: [string, string][] = [
           ctx.setLineDash([]);
 
           /* painter's order: whichever body is further back is drawn first */
-          var first = cA[2] <= cB[2] ? { c: cA, r: R_A, spin: spinA, rgbc: '178,210,232' } : { c: cB, r: R_B, spin: spinB, rgbc: '226,96,122' };
-          var second = first.c === cA ? { c: cB, r: R_B, spin: spinB, rgbc: '226,96,122' } : { c: cA, r: R_A, spin: spinA, rgbc: '178,210,232' };
+          var first = cA[2] <= cB[2] ? { c: cA, r: R_A, spin: spinA, rgbc: '107,100,0' } : { c: cB, r: R_B, spin: spinB, rgbc: '152,146,0' };
+          var second = first.c === cA ? { c: cB, r: R_B, spin: spinB, rgbc: '152,146,0' } : { c: cA, r: R_A, spin: spinA, rgbc: '107,100,0' };
 
           [first, second].forEach(function (b) {
             rgb = b.rgbc;

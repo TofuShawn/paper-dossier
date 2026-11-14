@@ -8,6 +8,15 @@ Two skins ship. **Press** is a press proof on the bed. **Lone Trail** is a
 control room printed on paper. They share one skeleton and one palette family,
 and differ in medium — which turns out to be the only variable that matters.
 
+> Three more ship since this was written: **Terminal**, **Paper** and **Static**.
+> This file still documents only the first two, because its tables are a
+> side-by-side of one shared skeleton and adding a fifth column would turn a
+> comparison into a catalogue. Read `src/skins/<id>/skin.css` for the rest — each
+> one opens with the decisions it makes and why. Terminal is the interesting
+> counter-example to everything below: it takes the same 12-column skeleton and
+> the same one-accent discipline, then uses acid design's *structure* with a
+> single ink in four measured values.
+
 ## The two skins
 
 |  | Press | Lone Trail |

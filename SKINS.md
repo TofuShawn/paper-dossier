@@ -11,11 +11,21 @@ cp -r src/skins/_template src/skins/my-skin
 Then change the id. Three files, in the order you should write them.
 
 Five skins ship: **Press** (a press proof), **Lone Trail** (a CRT
-console), **Terminal** (a dark industrial console), **Paper** (a printed ledger,
-set in serif) and **Static** (a controlled document — numbered clauses, no
-chrome, no client). They are deliberately far apart — same skeleton, five
+console), **Terminal** (acid layout printed in one ink), **Paper** (a printed
+ledger, set in serif) and **Static** (a controlled document — numbered clauses,
+no chrome, no client). They are deliberately far apart — same skeleton, five
 mediums — because that is the only honest test of whether the seam works. Read
 whichever one is closer to what you want and steal from it.
+
+Terminal is the one worth studying for *how a palette is built rather than
+picked*. It uses acid design's layout language — misregistered plates, a step
+wedge, marks too big for their job — and refuses acid's colour, because the skin
+already has one ink. The whole colour system is four measured values of one hue,
+and the rule is a ladder: the purer the value, the less it is allowed to do.
+`#FFFA00` at 1.07:1 can only be a fill with ink on top; a mark that must be seen
+on paper steps down to `#989200` (3.15:1); anything read as text steps down to
+`#4A4600` (9.36:1). Nothing structural ever uses the raw value. That is a
+repeatable method for any single-accent skin, not a fact about yellow.
 
 Paper and Static are the two that stopped being colourways. Paper answers with
 typography: serif display, hairline rules, drop capitals, marginalia and page
@@ -282,4 +292,9 @@ tell you exactly which skins are behind.
       reversed the tape's `rgba(255,255,255,.55)` lifted the paper from 243 to
       248 over a dash at 197, and the fold read as a line that stopped for 13px
       — invisible in a screenshot, obvious on the sheet
+- [ ] If a token is a *fill* rather than a mark, check it can be both. A colour
+      that is only legal as a ground needs a second, darker token for anything
+      drawn on the paper — Terminal's `--accent` `#FFFA00` is 1.07:1 and may
+      never draw a line, so `--accent-mid` `#989200` (3.15:1) does that job.
+      Reusing the fill for a rule produces a rule nobody can see
 

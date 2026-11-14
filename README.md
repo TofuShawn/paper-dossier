@@ -17,10 +17,13 @@ colophon. Five skins ship, and they are deliberately far apart.
   beam, a live ticker, a punch card you can type into, a morse readout, De Stijl
   bars. Every page opens under a solid ink running head; `/tags/` is a ruled
   register rather than a cloud.
-- **Terminal** — an industrial console, dark. Endfield yellow (`#FFFA00`) on
-  `#191919`, Saira at 800 with a 112%/125% width axis, cut corners on anything
-  pressable, square panels everywhere else, a magenta→yellow→mint tri-colour
-  rule, a telemetry strip, hatched halftone plates.
+- **Terminal** — acid layout, Endfield ink. A `#FCFBF7` sheet on an `#EFEEE8`
+  desk with 56px margins and 1.8 leading, then the structural aggression of acid
+  design rebuilt out of a single colour: the cover title is printed twice and the
+  second plate is out of register, a step wedge runs under the lockup, the index
+  numeral is a solid `#989200` slab. Saira at 800 with a 125% width axis, cut
+  corners on anything pressable. Acid's palette is deliberately refused — this
+  skin has one ink and it is Endfield yellow, used as a measured value ladder.
 - **Paper** — a printed ledger, set in type. Serif throughout (Iowan Old Style /
   Palatino / Source Han Serif), cream stock `#E6E1D6`, paper `#FBF9F4`, ink
   `#1C1A17`, one navy `#1B3F7A` for anything the reader should land on. Hairline
@@ -48,7 +51,7 @@ src/
     registry.ts        filesystem discovery; throws on a broken skin
     press/             skin 1 (meta, tokens, chrome, behaviour)
     lone-trail/        skin 2
-    terminal/          skin 3 — dark industrial console
+    terminal/          skin 3 — acid layout, one ink, on paper
     paper/             skin 4 — a printed ledger, set in type
     static/            skin 5 — a controlled document; no chrome, no client
     _template/         copy-me starter; ignored by the registry
@@ -244,11 +247,13 @@ Adding a skin means copying one folder. Two things make that work:
   hairline `#B9C4CC` is 1.78:1 — a separator, never a control edge or a carrier
   of meaning. Its accent `#24445C` is 10.21:1 and its accent text `#1E3A4F` is
   11.84:1; both appear only on the revision value and the clause number.
-- Terminal is the first dark skin, and on `#191919` no grey reaches the 3:1
-  graphic threshold — `#5A5A5A` tops out at 2.55:1. Panel hairlines are accepted
-  as decoration at `#3A3A3A`, but every line that *carries meaning* (focus ring,
-  active tab, progress, the current TOC entry) is drawn in the yellow accent
-  (15.85:1) instead of grey.
+- Terminal's one ink is a measured four-step ladder, and the rule is that the
+  purer the yellow the less it may do: `#FFFA00` is 1.07:1 on paper and is a fill
+  only (ink on it is 17.03:1); `#989200` at 3.15:1 is the graphic tier and the
+  only value allowed to draw a rule or the ghost numeral; `#6B6400` (5.88:1)
+  carries heavy marks; `#4A4600` (9.36:1) is the text tier. Nothing structural
+  uses the raw value, which is why the misregistered second plate on the cover
+  title is `#989200` and not the accent itself.
 - Lone Trail's De Stijl yellow (`#e3a724`, 1.86:1) never carries text; it exists
   as a stripe.
 - Static removes the script layer entirely, so nothing intercepts `Enter`,

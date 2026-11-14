@@ -2,8 +2,8 @@
  * Terminal skin — the client layer.
  *
  * Progressive by construction: with JavaScript off the site is a complete
- * document on dark ground. This file adds the console behaviour — the boot
- * ceremony, the halftone plate, the barcode, the grid overlay, the stagger.
+ * document on paper. This file adds the machine's behaviour — the boot ceremony,
+ * the halftone plate, the barcode, the stagger.
  *
  * Rules that carry over from the other skins:
  *   - Nothing here makes a noise.
@@ -15,8 +15,10 @@
  *   - The ceremony is a *link establishment*, not a lock: it can be dismissed by
  *     click, Enter, Escape, `?skip=1`, or the inline 8s timeout in Chrome.astro
  *     that fires even if this bundle never loads.
- *   - A plate is drawn in ink-on-dark with a single yellow register mark, which
- *     is the only place in this skin where the accent appears inside a figure.
+ *   - Colours come from the CSS tokens, never restated as literals. The plate
+ *     used to hardcode the console's dark ground; when the skin moved to paper
+ *     the figures stayed dark. Reading the custom properties means the canvas
+ *     follows the rest of the skin without a second copy of the palette.
  */
 import {
   bootReveals,
@@ -124,9 +126,18 @@ export function plate(cv: HTMLCanvasElement, { animate = true } = {}): void {
   const cell = Number(cv.dataset.cell) || 4;
   const sample = makeSampler(cv.dataset.plate || 'noise', w, h);
 
-  const ground = '#222222';
-  const ink = '#ededed';
-  const accent = '#fffa00';
+  // Ink on paper, read from the tokens rather than restated here: the plate used
+  // to hardcode the console's `#222222` ground and `#ededed` ink, so the skin's
+  // palette could change and the figures would stay dark — which is exactly what
+  // happened when this skin moved to paper. Falls back to the literal only when
+  // the custom property is missing entirely (a bare canvas in a test harness).
+  const css = getComputedStyle(cv);
+  const ground = css.getPropertyValue('--bg-elev').trim() || '#f5f4ee';
+  const ink = css.getPropertyValue('--fg').trim() || '#111110';
+  // The register mark uses the *text* tier of the accent, not the fill. The fill
+  // is `#fffa00`, which on this plate's `#f5f4ee` ground is 1.06:1 — a dot that
+  // would simply not be there. Same hue, read as a mark.
+  const accent = css.getPropertyValue('--accent-text').trim() || '#4a4600';
 
   const drawRows = (rows: number) => {
     ctx.fillStyle = ground;
@@ -142,7 +153,7 @@ export function plate(cv: HTMLCanvasElement, { animate = true } = {}): void {
 
         // A sparse ring of accent dots is the register mark on the plate.
         const isAccent = hash(cx * 3.1 + ry * 5.7) > 0.992;
-        const r = Math.min(cell * 0.63, Math.sqrt(d) * cell * (isAccent ? 0.34 : 0.63));
+        const r = Math.min(cell * 0.63, Math.sqrt(d) * cell * (isAccent ? 0.34 : 0.52));
 
         const jx = (hash(cx * 1.7 + ry * 2.3) - 0.5) * 0.32 * cell;
         const jy = (hash(cx * 2.9 + ry * 4.1) - 0.5) * 0.32 * cell;
@@ -194,8 +205,10 @@ export function plate(cv: HTMLCanvasElement, { animate = true } = {}): void {
 /* -------------------------------------------------------------------------- */
 
 /**
- * A decorative Code-39-ish strip, drawn inverted for this skin. Reads the
- * canvas `width`/`height` attributes, so the element must carry them.
+ * A decorative Code-39-ish strip. Reads the canvas `width`/`height` attributes,
+ * so the element must carry them. Bars are ink on the sheet, not light on a
+ * panel: on paper a barcode is a dark mark, and inverting it here to keep the
+ * console's look would have made it a dark rectangle on a white page.
  */
 export function barcode(cv: HTMLCanvasElement): void {
   const code = cv.dataset.barcode || 'ARCHIVE';
@@ -210,9 +223,11 @@ export function barcode(cv: HTMLCanvasElement): void {
   const ctx = cv.getContext('2d');
   if (!ctx) return;
   ctx.scale(ratio, ratio);
-  ctx.fillStyle = '#222222';
+
+  const css = getComputedStyle(cv);
+  ctx.fillStyle = css.getPropertyValue('--bg-sheet').trim() || '#fcfbf7';
   ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = '#ededed';
+  ctx.fillStyle = css.getPropertyValue('--fg').trim() || '#111110';
 
   let x = 4;
   for (let c = 0; c < code.length; c++) {
