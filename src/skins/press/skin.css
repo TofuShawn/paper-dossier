@@ -252,6 +252,9 @@
   border-left: 1px dashed var(--rule);
   opacity: 0.9;
   pointer-events: none;
+  /* Above the loose layer: the tape sits at 3 and would otherwise wash the
+     dashes out where it crosses the gutter. See `.cv-tape`. */
+  z-index: 4;
 }
 
 /* The gutter is where the two columns stop and start, which is not a fixed
@@ -924,6 +927,21 @@
   position: relative;
 }
 
+/* The tape is a loose layer on the sheet, so it takes a stacking position of
+   its own — but it crosses the gutter, and the fold is in that gutter. Tape
+   over a crease is what a real sheet looks like, so the overlap is not the
+   problem; the *order* was. The tape's gradient is `rgba(255,255,255,.55)` at
+   the top, which at 1x lifts the paper from 243 to 248; over a dashed rule that
+   reads as the fold stopping for a stretch, which is a broken line, not tape.
+
+   Moving the tape cannot fix it: measured at 1280 the tape's box runs
+   x818..952 and the fold sits at x892, so the fold is inside the tape's
+   *middle*, not its edge, and the tape is 132px wide and anchored to the right
+   rail. Two earlier attempts nudged `left` to -58 and -92 and neither changed
+   anything. The fix is the one a real stack would give — put the sheet's own
+   crease on top of the loose layer — so `.fold` sits at `z-index: 4` above this
+   rule's 3. Verified: the largest non-dark gap in the fold dropped from 13px to
+   2px, which is the dash rhythm itself. */
 .cv-tape {
   top: 96px;
   left: -34px;

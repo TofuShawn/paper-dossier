@@ -276,3 +276,10 @@ tell you exactly which skins are behind.
 - [ ] All `@media` blocks sit at the end of `skin.css`, after what they override
 - [ ] The sheet is occupied: no 300px+ run of bare paper in any viewport
       (`scripts/deadprobe.html` finds them)
+- [ ] A translucent layer that crosses a rule does not break it. Stacking order
+      is a design decision, not an accident: Press's tape sits at `z-index: 3`
+      and its fold at `4`, so the crease paints over the tape. With the order
+      reversed the tape's `rgba(255,255,255,.55)` lifted the paper from 243 to
+      248 over a dash at 197, and the fold read as a line that stopped for 13px
+      — invisible in a screenshot, obvious on the sheet
+

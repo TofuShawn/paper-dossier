@@ -19,10 +19,16 @@ src/skins/.generated/
 
 # Local scratch: screenshot passes taken while developing, and the reference
 # captures the first skin was built from. Both are working material, not
-# source — a clone of the template does not need ~28MB of PNGs.
-shots/
-shots*/
-ref/
+# source — a clone of the template does not need ~62MB of PNGs.
+#
+# They live under docs/ so the repository root stays readable: the top level
+# holds only the published surface (README, the three guides, LICENSE, the
+# build entry points). Anchoring the patterns to docs/ is deliberate — a bare
+# `shots/` would only match the root, and `shots*/` would match a directory of
+# that name anywhere, including one a future contributor means to commit.
+docs/shots/
+docs/shots*/
+docs/ref/
 
 # Local package-manager config. It can carry registry credentials, and it is
 # machine-specific in any case: the project must build from package.json and
