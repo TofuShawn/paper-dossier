@@ -121,7 +121,7 @@
   --font-display: 'Saira', 'Bahnschrift', 'DIN Alternate', 'Segoe UI Variable Display', 'Noto Sans SC', system-ui, sans-serif;
   --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Cascadia Mono', 'SF Mono', Consolas, 'Courier New', monospace;
-  --fs-cover: clamp(46px, 9.4vw, 168px);
+  --fs-cover: clamp(46px, 14.6vw, 224px);
   --fs-display: clamp(32px, 4.2vw, 52px);
   --fs-h1: 29px;
   --fs-h2: 20px;
@@ -134,10 +134,29 @@
   --tracking-display: -0.028em;
   --tracking-caps: 0.16em;
 
-  /* layout — no radius, no shadow; the sheet's edge is a hairline */
-  --measure: 1160px;
-  --margin: 56px;
-  --gutter: 24px;
+  /* layout — the grid is asymmetric on purpose.
+
+     Every other skin here centres a measure and fills it with equal tracks. This
+     one does not: the sheet is pushed left of centre by `--lean`, the rail is a
+     fixed narrow column, and the remaining width is split so the *reading* column
+     is deliberately wider than the 8/12 an equal grid would give it. The result
+     is a spread that never settles on a centre line — content is aligned to the
+     left rule while the sheet itself sits off balance against the viewport.
+
+     `--lean` is a percentage of the free width, so the imbalance scales with the
+     window instead of becoming a fixed 40px that disappears when you resize. */
+  /* The measure is a *fraction* of the viewport, not a fixed width. A fixed
+     1240px means any window narrower than that has no free width to lean into,
+     so the asymmetry — the skin's whole structural premise — disappears at
+     exactly the sizes most people browse at. Clamping to the viewport minus a
+     fixed bearing keeps the imbalance alive from 1440 down to the breakpoint
+     where the layout genuinely has to collapse. */
+  --measure: min(1240px, calc(100% - 32px));
+  --margin: 44px;
+  --lean: 46;
+  --gutter: 0px;
+  --rail: 300px;
+  --text-col: 1.86fr;
   --baseline: 8px;
   --radius: 0;
   --shadow-sheet: none;
@@ -194,15 +213,36 @@
 /* shell                                                                       */
 /* -------------------------------------------------------------------------- */
 
+/* The sheet does not sit in the middle. `margin-right: auto` plus a percentage
+   left margin puts it off centre by `--lean` of the free width — at 1440 that is
+   about 90px of visible imbalance, which is enough to feel wrong in a way that
+   reads as intentional and not enough to look like a bug.
+
+   It is also wider than the other skins' measure (1240 against 1160) and its
+   right edge is allowed to come closer to the viewport, because the rail inside
+   it is narrow. The spread's bearing is thus uneven: 44px of margin on the left
+   column, 44px on the right, but the *sheet* is not centred. */
 .sheet {
   width: var(--measure);
   max-width: calc(100% - 32px);
-  margin: 26px auto 40px;
+  margin-top: 26px;
+  margin-bottom: 40px;
+  /* `--lean` is a bare number on purpose: calc() cannot multiply a length by a
+     percentage, and `200px * 46%` is an invalid declaration that gets dropped
+     whole — which silently pinned the sheet to the viewport's left edge instead
+     of off-centre. Unitless keeps the arithmetic legal.
+
+     `max(0px, …)` is not defensive padding. Below `--measure` the parenthesised
+     term goes negative, and a negative left margin pushes the sheet off the left
+     edge of the screen — at 860 it measured -114 and produced 69 overflowing
+     elements, an entire page shifted out of view. Once the sheet is narrower than
+     the viewport there is no free width to lean into, so the lean has to clamp to
+     zero and the sheet centres instead. */
+  margin-left: max(0px, calc((100% - var(--measure)) * var(--lean) / 100));
+  margin-right: auto;
 }
 
-/* The sheet is a sheet: a hairline edge, 56px of margin, and 64px of foot. The
-   generous foot is the cheapest minimalism there is — it costs nothing and it
-   makes the last line on the page read as the end of a document. */
+/* The sheet is a sheet: a hairline edge, 44px of margin, and 64px of foot. */
 .spread {
   background: var(--bg-sheet);
   border: 1px solid var(--rule-soft);
@@ -632,27 +672,79 @@
   margin-bottom: 40px;
 }
 
+/* The cover body is a grid that the title refuses to obey.
+
+   Two tracks — reading and rail — but the title is taken *out* of the reading
+   track and laid across both, so it runs under the plate and the plate sits on
+   top of it. That inversion is the whole acid move: the biggest object on the
+   page and the object that is supposed to annotate it occupy the same space, and
+   the z-order decides who wins. The title is still readable where it emerges from
+   under the rail, which is what keeps it a collision rather than a mess.
+
+   `grid-row` is explicit on the two text blocks so they stay in the flow under
+   the overflowing title instead of being pushed down by it. */
 .cover-body {
   display: grid;
-  grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr);
-  gap: 56px;
+  grid-template-columns: minmax(0, var(--text-col)) var(--rail);
+  gap: 0 40px;
   align-items: start;
+  position: relative;
 }
 
-/* The two columns are not the same height — the right rail carries a plate, a
-   table and a barcode, the left carries type. At 1440 the left measured 265px
-   short (ended y708, the rail y973), which left a 300px+ run of bare sheet and
-   read as an unfinished block rather than as air.
+/* The reading column ignores the right rail's edge: it keeps its own width and
+   does not shrink when the rail narrows, which is what lets the title run past
+   the gutter.
 
-   `align-self: stretch` plus `margin-top: auto` on the tags was the first
-   attempt and it was worse: it moved the same 265px gap into the middle of the
-   column, between the body copy and the tags, where it cut the block in two.
-   The right answer is to make the rail shorter, not the column taller — the
-   plate goes to 4:3 and the table tightens — so the two columns land within
-   ~150px of each other and the remaining space reads as the bottom margin of a
-   printed page. */
+   It sits ABOVE the rail, and that ordering is load-bearing. The first attempt
+   had the rail on top, which put the plate over the last letter and turned the
+   masthead into "ARCHIV" — a collision that destroys the word is a clip, not a
+   composition. Type over image is the one direction that stays readable, and it
+   is also how an overprint actually works: the second run lands on top of the
+   first. Only the title actually overlaps; the rest of the column ends well
+   short of the rail, so raising the whole column changes nothing else. */
 .cv-left {
-  align-self: start;
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 4;
+}
+
+/* The rail is under the title and is allowed to be cut into by it. */
+.cv-right {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  position: relative;
+  z-index: 3;
+  border-left: 1px solid var(--rule);
+  padding-left: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  /* The rail's content starts below the title's ink, not at the sheet's top.
+
+     Measured at 1440: the title's glyphs end at y430 and its line box at y521,
+     while the rail began at y218 — so the plate's PL.00 tag (y283) sat underneath
+     "ARCHIVE" and was invisible. A tag that cannot be read is not a composition;
+     it is a collision that destroys content. The rail therefore clears the ink
+     with a margin proportional to the cover size, so the relationship holds at
+     every width instead of only at 1440.
+
+     What survives is the crossing that matters: the title's last letters still
+     run *past the gutter* into the rail's column, over the hairline that bounds
+     it. The plate steps aside vertically; the type does not. */
+  margin-top: 0;
+  padding-top: calc(var(--fs-cover) * 1.08);
+}
+
+/* The title breaks the gutter: it is allowed to be as wide as the whole body
+   minus 40px, regardless of the track it started in. */
+.cv-left .t-cover {
+  position: relative;
+  z-index: 1;
+  width: calc(100% + var(--rail) + 40px - 34px);
+  max-width: none;
+  margin: 0 0 26px;
 }
 
 /* The volume line: no box. A bordered chip here was the console's way of making
@@ -692,17 +784,21 @@
   user-select: none;
 }
 
-/* A step wedge — the one object a printer uses to check a plate, and the acid
-   gesture that survives having no second colour. Four blocks of the same ink at
-   four measured values, unequal widths, one paper gap where a step is missing.
-   That gap is what makes it read as a print artifact and not as a UI element:
-   a real wedge is a ladder, and the ladder is allowed to skip.
+/* A step wedge that runs out of the block it belongs to.
 
-   The four stops are exactly the four tiers the rest of the file is allowed to
-   use, so the wedge is also the legend for the palette. */
+   It is wider than the reading column and rotated slightly, so its right end
+   pushes under the rail while the line reads as not level. 1.1deg is enough that
+   the eye registers it and not enough to look like a mistake. It also carries the
+   title's misregistration idea down the page: the paper is not square to the
+   frame either.
+
+   The four stops are the four palette tiers, so the wedge doubles as the key. */
 .cv-rule {
-  height: 6px;
-  margin: 0 0 26px;
+  height: 7px;
+  margin: 0 0 32px;
+  width: calc(100% + 150px);
+  transform: rotate(-1.1deg);
+  transform-origin: left center;
   background: linear-gradient(
     90deg,
     var(--accent) 0 32%,
@@ -784,15 +880,9 @@
   font-weight: 700;
 }
 
-/* The right rail is a column of the sheet, separated by the same hairline every
-   other column uses. It is not a card: no fill, no border, no padding box. */
-.cv-right {
-  border-left: 1px solid var(--rule);
-  padding-left: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+/* The rail's visual treatment is set where it is placed (above), because the
+   placement and the stacking are the same decision here. This block only carries
+   the note, so the next reader does not go looking for a second definition. */
 
 .plate {
   position: relative;
@@ -920,14 +1010,32 @@
 /* grid and column rules                                                       */
 /* -------------------------------------------------------------------------- */
 
+/* The 12-column grid is kept — every page and both other layouts depend on those
+   class names — but in this skin the tracks are not equal. A repeating pattern
+   gives every fourth track about a third of the width of its neighbours, so any
+   element that spans several tracks lands on an uneven edge. `.c1-7` does not
+   measure 7/12 of anything here; it measures whatever those tracks add up to,
+   which is the point: the same class names produce a spread that never divides
+   evenly.
+
+   `minmax(0, …)` throughout, because the alternative is a track that refuses to
+   shrink and pushes the page wider than the viewport. That is the one property of
+   the old grid that could not be given up. */
 .g {
+  --u: 1fr;
+  grid-template-columns:
+    var(--u) var(--u) var(--u) calc(var(--u) * 0.34)
+    var(--u) var(--u) var(--u) calc(var(--u) * 0.34)
+    var(--u) var(--u) var(--u) calc(var(--u) * 0.34);
   gap: 0;
   align-items: start;
+  min-width: 0;
 }
 
 /* The column rule is the separator: with gap 0 the child that follows another
-   child carries the hairline, so `.c1-7 + .c9-12` reads as two bays and a
-   single `.c1-12` reads as one. */
+   child carries the hairline. In this skin the rule is allowed to run past the
+   bottom of the shorter bay instead of stopping with it, which is what makes the
+   spread look ruled by a press rather than boxed by a layout engine. */
 .g > * + * {
   border-left: 1px solid var(--rule-soft);
   padding-left: 28px;
@@ -1060,8 +1168,34 @@
 /* article                                                                     */
 /* -------------------------------------------------------------------------- */
 
+/* The article's running head is a sidebar element pulled out of the gutter: the
+   code and the reading time are set at the sheet's left margin in small caps,
+   while the title starts further in. That indentation is the whole device —
+   nothing is centred, and the left edge deliberately steps twice. */
 .article-head {
   margin-top: 28px;
+  position: relative;
+  padding-left: 74px;
+}
+
+.article-head .t-display {
+  margin: 0 0 14px;
+  width: calc(100% + 60px);
+  max-width: none;
+  letter-spacing: -0.026em;
+}
+
+/* The code, hung into the margin where a clause number would be on a
+   specification — except this skin does not print it in a gutter, it prints it at
+   the sheet edge and lets the rule run through it. */
+.article-head::before {
+  content: '';
+  position: absolute;
+  left: 52px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule-soft);
 }
 
 /* The kicker was a 3px yellow bar under the metadata. On paper that bar is
@@ -1099,10 +1233,6 @@
   text-underline-offset: 3px;
 }
 
-.article-head .t-display {
-  margin: 0 0 14px;
-}
-
 .article-head .t-h2 {
   margin: 0 0 16px;
 }
@@ -1133,8 +1263,16 @@
 /* prose                                                                       */
 /* -------------------------------------------------------------------------- */
 
+/* The prose is set to a width that does not match the column above it. This is
+   the one reliably uncomfortable thing on the page and it is deliberate: a line
+   of body text ending 40px short of the rule that introduces the section is what
+   a paste-up sheet looks like when the galleys are a different measure.
+
+   It stays inside the accessibility envelope — 68ch is still a readable line —
+   but it is not the column width, and that is visible. */
 .prose {
   margin-top: 40px;
+  max-width: 68ch;
 }
 
 .prose > * + * {
@@ -1149,10 +1287,11 @@
   color: var(--fg-soft);
 }
 
-/* A section head is set in the machine's face and its rule is overprinted: the
-   grey hairline, then an `--accent-mid` plate 2px below it. Two passes that do
-   not quite meet is what a bad press run looks like, and it costs one pseudo-
-   element. */
+/* Section heads run wider than the prose they introduce, so their rule crosses
+   the column and lands in the gutter. The *heading* stays on the column; only its
+   rule escapes, which keeps the words on a readable measure while the structure
+   overshoots. That split — text obedient, rule not — is what separates a pasted-up
+   sheet from a broken one. */
 .prose h2 {
   font-family: var(--font-display);
   font-size: 26px;
@@ -1166,16 +1305,22 @@
   padding-bottom: 10px;
   border-bottom: 1px solid var(--rule);
   position: relative;
+  width: calc(100% + 96px);
+  max-width: none;
 }
 
+/* The accent stroke under it is longer than the heading text and offset below
+   the grey rule, so the two passes visibly miss each other. */
 .prose h2::after {
   content: '';
   position: absolute;
   left: 0;
-  width: 64px;
-  bottom: -2px;
+  width: 96px;
+  bottom: -3px;
   height: 1px;
   background: var(--accent);
+  transform: rotate(-0.6deg);
+  transform-origin: left center;
 }
 
 .prose h3 {
@@ -1215,10 +1360,15 @@
   font-weight: 600;
 }
 
+/* The pull quote breaks the measure the other way: it hangs left, into the
+   margin the article left empty, and runs wider than the prose it interrupts. */
 .prose blockquote {
   border-left: 2px solid var(--accent-text);
   padding: 2px 0 2px 22px;
   background: none;
+  margin-left: -44px;
+  width: calc(100% + 44px);
+  max-width: none;
 }
 
 .prose blockquote p {
@@ -2319,16 +2469,56 @@
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 1000px) {
+  /* Below this the collision stops working: there is no rail wide enough to sit
+     on top of a title and still leave the title legible, so the two go back to
+     stacking. The asymmetry survives — the sheet is still off centre and the
+     wedge still overshoots — but the overlap does not. An overlap that makes
+     both objects unreadable is not a design decision, it is a defect. */
+  :root[data-skin='terminal'] {
+    --lean: 30;
+    --rail: 240px;
+  }
+
   .cover-body {
     grid-template-columns: minmax(0, 1fr);
     gap: 36px;
   }
 
+  /* The title stops running under the rail and returns to its own column. */
+  .cv-left .t-cover {
+    width: calc(100% + 40px);
+  }
+
+  .cv-rule {
+    width: calc(100% + 40px);
+    transform: rotate(-0.8deg);
+  }
+
   .cv-right {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: 0;
     border-left: 0;
     border-top: 1px solid var(--rule);
     padding-left: 0;
     padding-top: 26px;
+  }
+
+  .prose h2 {
+    width: calc(100% + 40px);
+  }
+
+  .prose blockquote {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .article-head {
+    padding-left: 46px;
+  }
+
+  .article-head .t-display {
+    width: calc(100% + 30px);
   }
 
   .big-no {
@@ -2341,6 +2531,13 @@
 }
 
 @media (max-width: 900px) {
+  /* The asymmetric track pattern is a wide-screen device. On one column it would
+     produce 12 useless tracks and a 3.7x-wide one, so the grid collapses to a
+     single track and the overshoot allowance with it. */
+  .g {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
   .g > * + * {
     border-left: 0;
     padding-left: 0;
@@ -2362,14 +2559,46 @@
 }
 
 @media (max-width: 760px) {
+  /* On a phone every overshoot is removed. There is no margin to overshoot into:
+     the sheet already measures 100% - 16px, so +150px of wedge or +96px of
+     heading rule is a horizontal scrollbar, not a design. The imbalance that
+     survives is the left-aligned sheet at `--lean: 0`, which on this width simply
+     means full-bleed with 8px of desk. */
   :root[data-skin='terminal'] {
     --margin: 20px;
     --fs-body: 15.5px;
+    --lean: 0;
+  }
+
+  .cv-left .t-cover,
+  .cv-rule,
+  .prose h2,
+  .article-head .t-display {
+    width: 100%;
+  }
+
+  .cv-rule {
+    transform: rotate(-0.6deg);
+  }
+
+  .prose h2::after {
+    transform: none;
+  }
+
+  .article-head {
+    padding-left: 0;
+  }
+
+  .article-head::before {
+    display: none;
   }
 
   .sheet {
     max-width: calc(100% - 16px);
     margin-top: 8px;
+    /* auto, not the lean: on a phone the sheet is the viewport, so centring is
+       the same as not leaning, and it keeps the 8px of desk even on both sides. */
+    margin-left: auto;
   }
 
   .spread {
