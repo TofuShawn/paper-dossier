@@ -126,6 +126,30 @@ for local viewing only.
 > seen to fail with `require is not defined` or `spawn EPERM` under some sandboxed
 > hosts — `astro build` plus a static server is a complete workflow.
 
+### Measuring a design change
+
+`npm run verify` checks the things a build can check without a browser. It
+cannot tell you whether a rule is cutting a descender, whether the scanline
+layer actually costs contrast, or where the cover's content really stops —
+those need a layout engine.
+
+`scripts/` carries 37 small browser harnesses for that, each written to answer
+one question and each printing numbers rather than a verdict:
+
+```bash
+npm run build                        # they measure the built site
+node scripts/probe.mjs               # list them
+node scripts/probe.mjs fidelity      # resolved tokens, grid, type ramp
+node scripts/probe.mjs sweep         # every page x skin x width, one row each
+node scripts/probe.mjs overlap --page home
+```
+
+They load the site into a same-origin `<iframe>` and read `contentDocument`, so
+the runner serves them from `dist/` — a probe served from `scripts/` would be a
+different origin and every measurement would silently come back empty. Full
+catalogue, the conventions for writing one, and when to delete one:
+[docs/PROBES.md](docs/PROBES.md).
+
 ## Template and content are two layers
 
 This repository is the **template**. It is published as a library, so it ships

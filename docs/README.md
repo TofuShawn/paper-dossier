@@ -13,6 +13,7 @@ root keeps the published surface — `README.md`, `SKINS.md`, `WRITING.md`,
 | Path | What | Tracked |
 | --- | --- | --- |
 | `README.md` | This file | yes |
+| `PROBES.md` | Catalogue of the 37 browser harnesses in `scripts/` — what each measures, how to run one, how to write one | yes |
 | `shots/`, `shots2/` … `shots6/` | Screenshot passes taken while developing the skins | no — several hundred PNGs, ~62 MB |
 | `ref/` | Reference captures the first skin was built from | no |
 | `screenshots/actual/` | Output of the fidelity comparison | no |

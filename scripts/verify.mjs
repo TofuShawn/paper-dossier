@@ -7,10 +7,12 @@
  *  3. The document carries the furniture its skin advertises.
  *
  * This is the check that runs in CI. The pixel-level harness (screenshots,
- * contrast measurement, overflow walk) lives in `scripts/probe.html` and needs a
- * real browser; see the README for how to run it. Keeping the two separate means
- * `npm run verify` is fast and environment-independent, while the visual checks
- * stay available when you are changing the design.
+ * contrast measurement, overflow walk) lives in `scripts/probe.html` and the
+ * other thirty-six probes beside it; they need a real browser. Run one with
+ * `node scripts/probe.mjs <name>`, and see `docs/PROBES.md` for the catalogue.
+ * Keeping the two separate means `npm run verify` is fast and
+ * environment-independent, while the visual checks stay available when you are
+ * changing the design.
  */
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
