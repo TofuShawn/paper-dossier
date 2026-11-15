@@ -6,7 +6,6 @@ import Folio from '../../components/Folio.astro';
 import CropMarks from '../../components/CropMarks.astro';
 import IndexRow from '../../components/IndexRow.astro';
 import { POSTS, groupByYear, getTags } from '../../lib/posts';
-import { SITE } from '../../lib/site';
 import { featuresAny } from '../../skins/registry';
 
 const f = featuresAny();
@@ -22,26 +21,28 @@ const tags = getTags();
 
       <div class="g">
         <div class="c1-7">
-          <h1 class="t-display" data-rev>Every entry</h1>
+          <h1 class="t-display" data-rev>
+            Every entry
+          </h1>
           <p class="t-lead" style="margin-top:14px;--d:80ms" data-rev>
             按时间倒序。每一条都有编号、日期与阅读时长。
           </p>
 
-          {
-            groups.map((g) => (
-              <div class="stag-group">
-                <p class="ix-year">{g.year}</p>
-                {g.posts.map((p) => (
-                  <IndexRow post={p} mark={`${p.displayCode}`} />
-                ))}
-              </div>
-            ))
-          }
+          {groups.map((g) => (
+            <div class="stag-group">
+              <p class="ix-year">{g.year}</p>
+              {g.posts.map((p) => (
+                <IndexRow post={p} mark={`${p.displayCode}`} />
+              ))}
+            </div>
+          ))}
         </div>
 
         <div class="c9-12">
           <div class="sidenote">
-            <p><b>Index</b> {POSTS.length} entries across {groups.length} years.</p>
+            <p>
+              <b>Index</b> {POSTS.length} entries across {groups.length} years.
+            </p>
           </div>
 
           <div style="margin-top:26px">

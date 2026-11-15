@@ -6,7 +6,7 @@ import Folio from '../../components/Folio.astro';
 import CropMarks from '../../components/CropMarks.astro';
 import Plate from '../../components/Plate.astro';
 import SideToc from '../../components/SideToc.astro';
-import { ALL_POSTS, getAdjacent, getPost, postUrl, tagSlug } from '../../lib/posts';
+import { ALL_POSTS, getAdjacent, postUrl, tagSlug } from '../../lib/posts';
 import { longDate, isoDate, stampDate } from '../../lib/format';
 import { featuresAny } from '../../skins/registry';
 
@@ -23,12 +23,7 @@ const toc = post.headings;
 // body. Keeping it out of the markdown means posts stay portable.
 ---
 
-<BaseLayout
-  title={post.title}
-  description={post.description}
-  path={postUrl(post)}
-  progress={true}
->
+<BaseLayout title={post.title} description={post.description} path={postUrl(post)} progress={true}>
   <div class="sheet">
     <article class="spread" lang={post.lang}>
       {f.printArtifacts && <CropMarks corners={2} />}
@@ -49,7 +44,9 @@ const toc = post.headings;
           ))}
         </div>
 
-        <h1 class="t-display" data-rev>{post.title}</h1>
+        <h1 class="t-display" data-rev>
+          {post.title}
+        </h1>
         {post.titleCn && (
           <p class="t-h2" style="margin-top:10px;color:var(--fg-mute);--d:60ms" data-rev>
             {post.titleCn}
@@ -109,7 +106,9 @@ const toc = post.headings;
           )}
 
           <div class="sidenote" style="margin-top:26px">
-            <p><b>Cite</b></p>
+            <p>
+              <b>Cite</b>
+            </p>
             <p style="margin-top:6px">
               {post.displayCode}, {stampDate(post.dateObj)}.
             </p>

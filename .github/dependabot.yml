@@ -1,0 +1,84 @@
+version: 2
+
+# Dependabot keeps three things current: npm packages, the Actions this
+# repository runs, and the two Docker base images.
+#
+# The rule followed throughout: a dependency that can change the *rendered
+# site* gets its own pull request, and a dependency that can only pass or fail
+# gets batched. `npm run verify` gates all of them, so a bad bump costs a red
+# check rather than a bad deploy — but a reviewable diff is still the point.
+
+updates:
+  # ---------------------------------------------------------------------------
+  # npm. One entry, because Dependabot takes a single config per ecosystem and
+  # directory — two entries on `directory: /` are a duplicate and the second is
+  # silently dropped, which is the kind of misconfiguration that looks like it
+  # is working for months.
+  #
+  # Split by group instead:
+  #
+  #   tooling   linters, formatters, type packages. They cannot alter output,
+  #             only reject it, so they arrive monthly in one PR.
+  #   astro     the frameworks and the schema library — the packages that
+  #             actually decide what HTML is emitted. Weekly, ungrouped, one PR
+  #             each, because a group would make it impossible to tell which
+  #             one changed a route.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 6
+    groups:
+      tooling:
+        patterns:
+          - 'eslint'
+          - '@eslint/*'
+          - 'typescript-eslint'
+          - 'eslint-plugin-*'
+          - 'globals'
+          - 'prettier'
+          - 'prettier-plugin-*'
+          - '@types/*'
+        update-types:
+          - minor
+          - patch
+      astro:
+        patterns:
+          - 'astro'
+          - '@astrojs/*'
+          - 'zod'
+        # Major versions stay out of the group so an Astro 8 upgrade is reviewed
+        # on its own rather than buried in a bump of three packages.
+        update-types:
+          - minor
+          - patch
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+
+  # The Actions themselves. These run with repository permissions, which makes
+  # them the part of the supply chain that matters most: `checkout` and
+  # `setup-node` are what every run depends on.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+    labels:
+      - dependencies
+      - ci
+
+  # `node:24-alpine` and `nginx:alpine`. A base-image bump is a full rebuild in
+  # a different runtime, so monthly is the right cadence for a template that
+  # changes a few times a month at most.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: docker
+    labels:
+      - dependencies
+      - docker

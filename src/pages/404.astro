@@ -1,10 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { POSTS } from '../lib/posts';
-import { SITE } from '../lib/site';
-import { getTags } from '../lib/posts';
 
-const tags = getTags();
 const recent = POSTS.slice(0, 5);
 ---
 
@@ -12,8 +9,12 @@ const recent = POSTS.slice(0, 5);
   <div class="sheet">
     <section class="spread notfound">
       <p class="t-micro">Error 404</p>
-      <p class="code" aria-hidden="true">404</p>
-      <h1 class="t-h1" style="margin-top:18px">This page is not in the archive</h1>
+      <p class="code" aria-hidden="true">
+        404
+      </p>
+      <h1 class="t-h1" style="margin-top:18px">
+        This page is not in the archive
+      </h1>
       <p class="t-lead" style="margin-top:12px;max-width:52ch;margin-inline:auto">
         你找的条目不存在，或者已经被移走。下面是一些仍然在架上的东西。
       </p>
@@ -22,7 +23,9 @@ const recent = POSTS.slice(0, 5);
         {recent.map((p) => (
           <a class="ix-row" href={`/posts/${p.slug}/`}>
             <span class="code">{p.displayCode}</span>
-            <span class="nm" style="font-size:15px">{p.title}</span>
+            <span class="nm" style="font-size:15px">
+              {p.title}
+            </span>
             <span class="lead" aria-hidden="true"></span>
           </a>
         ))}

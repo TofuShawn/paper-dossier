@@ -7,4 +7,7 @@ export interface Props {
 const { page, note } = Astro.props;
 ---
 
-<span class="folio" aria-hidden="true">{page}{note ? ` · ${note}` : ''}</span>
+<span class="folio" aria-hidden="true">
+  {page}
+  {note ? ` · ${note}` : ''}
+</span>

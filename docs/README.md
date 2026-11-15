@@ -14,6 +14,7 @@ root keeps the published surface — `README.md`, `SKINS.md`, `WRITING.md`,
 | --- | --- | --- |
 | `README.md` | This file | yes |
 | `PROBES.md` | Catalogue of the 37 browser harnesses in `scripts/` — what each measures, how to run one, how to write one | yes |
+| `TOOLING.md` | Why the linter and formatter are configured the way they are — the settings that look arbitrary and are not | yes |
 | `shots/`, `shots2/` … `shots6/` | Screenshot passes taken while developing the skins | no — several hundred PNGs, ~62 MB |
 | `ref/` | Reference captures the first skin was built from | no |
 | `screenshots/actual/` | Output of the fidelity comparison | no |
@@ -52,3 +53,10 @@ what you meant to publish.
 Note that the four root guides are referenced thirteen times across the repo and
 are the first thing a visitor sees on GitHub. Do not move them here for
 tidiness; their location is the point.
+
+## Continuous integration
+
+`.github/` sits at the root because GitHub only reads it there — it is the one
+exception to "the published surface only". Its two files are documented in the
+root README under "Checks, and what each one defends"; they are not working
+material and do not belong in this directory.

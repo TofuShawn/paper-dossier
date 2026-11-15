@@ -16,7 +16,7 @@ function normalise(raw: SkinMeta, folder: string): SkinMeta {
   if (raw.id !== folder) {
     throw new Error(
       `Skin folder "${folder}" declares id "${raw.id}". They must match, because the id ` +
-        `selects the skin via [data-skin] and the folder is how skin.css is found.`,
+        `selects the skin via [data-skin] and the folder is how skin.css is found.`
     );
   }
   return { ...raw, features: { ...DEFAULT_FEATURES, ...raw.features } };
@@ -52,7 +52,7 @@ export const DEFAULT_SKIN_ID = 'press';
 if (!SKINS.some((s) => s.id === DEFAULT_SKIN_ID)) {
   throw new Error(
     `DEFAULT_SKIN_ID is "${DEFAULT_SKIN_ID}" but no such skin exists. ` +
-      `Available: ${SKINS.map((s) => s.id).join(', ')}.`,
+      `Available: ${SKINS.map((s) => s.id).join(', ')}.`
   );
 }
 

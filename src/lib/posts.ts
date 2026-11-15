@@ -78,7 +78,7 @@ function toDate(value: string | Date, field: string, slug: string): Date {
  * word each, and each CJK character counts as one word.
  */
 function countWords(text: string): number {
-  const latin = text.match(/[A-Za-z0-9][A-Za-z0-9'’\-]*/g)?.length ?? 0;
+  const latin = text.match(/[A-Za-z0-9][A-Za-z0-9'’-]*/g)?.length ?? 0;
   const cjk = text.match(/[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/g)?.length ?? 0;
   return latin + cjk;
 }

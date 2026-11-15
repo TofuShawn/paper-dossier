@@ -86,14 +86,14 @@ async function main() {
   // title against this checkout's own `site.ts` is the only cheap way to know.
   {
     const want = expectedTitle();
-    const { res, body } = await get('/');
+    const { body } = await get('/');
     const got = body.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
     if (!want) {
       bad('serves this checkout', 'could not read SITE.title from src/lib/site.ts');
     } else if (!got.includes(want)) {
       bad(
         'serves this checkout',
-        `title "${got}" does not contain "${want}" — ${BASE} is a different site`,
+        `title "${got}" does not contain "${want}" — ${BASE} is a different site`
       );
     } else {
       ok('serves this checkout', `title matches site.ts ("${want}")`);
@@ -140,7 +140,11 @@ async function main() {
   {
     const res = await head('/404.html');
     if (res.status === 404) ok('/404.html direct', '404 (internal)');
-    else bad('/404.html direct', `expected 404, got ${res.status} — the internal directive is missing`);
+    else
+      bad(
+        '/404.html direct',
+        `expected 404, got ${res.status} — the internal directive is missing`
+      );
   }
 
   // --- redirects must keep host:port --------------------------------------
@@ -151,16 +155,14 @@ async function main() {
     const res = await head(p);
     const loc = res.headers.get('location') || '';
     if (res.status !== 301) bad(`redirect ${p}`, `expected 301, got ${res.status}`);
-    else if (!loc.startsWith('/')) bad(`redirect ${p}`, `Location "${loc}" is absolute; absolute_redirect should be off`);
+    else if (!loc.startsWith('/'))
+      bad(`redirect ${p}`, `Location "${loc}" is absolute; absolute_redirect should be off`);
     else ok(`redirect ${p}`, `301 → ${loc}`);
   }
 
   // --- security headers on every kind of response -------------------------
   const asset = (await get('/')).body.match(/\/_astro\/[A-Za-z0-9._-]+\.css/)?.[0];
-  const checks = [
-    ['/', 'html'],
-    ...(asset ? [[asset, 'asset']] : []),
-  ];
+  const checks = [['/', 'html'], ...(asset ? [[asset, 'asset']] : [])];
   for (const [path, label] of checks) {
     const res = await head(path);
     const need = [
@@ -249,8 +251,13 @@ async function main() {
           const block = css.slice(hit.index, css.indexOf('}', hit.index));
           return !block.includes(decl);
         });
-        if (missing.length === 0) ok('skin bundle current', `${probes.length} layout rules present`);
-        else bad('skin bundle current', `missing: ${missing.map((p) => p[2]).join(', ')} — rebuild the image`);
+        if (missing.length === 0)
+          ok('skin bundle current', `${probes.length} layout rules present`);
+        else
+          bad(
+            'skin bundle current',
+            `missing: ${missing.map((p) => p[2]).join(', ')} — rebuild the image`
+          );
       }
     }
   }

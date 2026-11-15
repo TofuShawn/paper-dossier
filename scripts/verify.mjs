@@ -26,15 +26,7 @@ const DIST = join(ROOT, 'dist');
 /* ---------------------------------------------------------------- routes -- */
 
 /** Every route the template is expected to emit. */
-const ROUTES = [
-  '/',
-  '/posts/',
-  '/tags/',
-  '/about/',
-  '/404.html',
-  '/rss.xml',
-  '/sitemap.xml',
-];
+const ROUTES = ['/', '/posts/', '/tags/', '/about/', '/404.html', '/rss.xml', '/sitemap.xml'];
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',

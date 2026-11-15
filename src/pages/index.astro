@@ -32,7 +32,9 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
       {f.printArtifacts && <CropMarks />}
 
       <div class="micro-row">
-        <span class="t-micro">{SITE.title} / {SITE.subtitle}</span>
+        <span class="t-micro">
+          {SITE.title} / {SITE.subtitle}
+        </span>
         <span class="t-micro">
           {latest ? monthLabel(latest.dateObj) : '—'} · {ALL.length} ENTRIES
         </span>
@@ -40,7 +42,9 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
 
       <div class="cover-body">
         <div class="cv-left">
-          <p class="t-micro" data-rev>Vol. {String(ALL.length).padStart(2, '0')} — Field notes</p>
+          <p class="t-micro" data-rev>
+            Vol. {String(ALL.length).padStart(2, '0')} — Field notes
+          </p>
 
           <!--
             `data-plate` carries the title a second time for the misregistration
@@ -50,13 +54,7 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
             tree by the pseudo-element being decoration only; every other skin
             ignores the attribute entirely.
           -->
-          <h1
-            class="t-cover"
-            id="cover-title"
-            data-rev
-            data-plate={SITE.title}
-            style="--d:90ms"
-          >
+          <h1 class="t-cover" id="cover-title" data-rev data-plate={SITE.title} style="--d:90ms">
             {SITE.title}
           </h1>
 
@@ -71,8 +69,16 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
           -->
           <div class="skin-only" data-only="static">
             <dl class="spec">
-              <div><dt>Document</dt><dd>{SITE.title} — {SITE.subtitle}</dd></div>
-              <div><dt>Revision</dt><dd class="rev">{serial}</dd></div>
+              <div>
+                <dt>Document</dt>
+                <dd>
+                  {SITE.title} — {SITE.subtitle}
+                </dd>
+              </div>
+              <div>
+                <dt>Revision</dt>
+                <dd class="rev">{serial}</dd>
+              </div>
               <div>
                 <dt>Issued</dt>
                 <dd>{latest ? stampDate(latest.dateObj) : '—'}</dd>
@@ -83,7 +89,10 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
               </div>
               <div>
                 <dt>Pages</dt>
-                <dd>{String(ALL.length).padStart(3, '0')} entries · {totalWords.toLocaleString('en-US')} words</dd>
+                <dd>
+                  {String(ALL.length).padStart(3, '0')} entries ·{' '}
+                  {totalWords.toLocaleString('en-US')} words
+                </dd>
               </div>
             </dl>
           </div>
@@ -105,7 +114,9 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
 
           <div class="cv-kw" data-rev style="--d:300ms">
             <span>Index</span>
-            {tags.slice(0, 5).map((t) => <span>{t.tag}</span>)}
+            {tags.slice(0, 5).map((t) => (
+              <span>{t.tag}</span>
+            ))}
           </div>
 
           <!--
@@ -124,7 +135,9 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
               <section class="punch" id="punch" aria-label="Punch card encoder">
                 <div class="punch-head">
                   <p class="t-micro">Punch card</p>
-                  <span class="t-micro" id="punch-count">0 / 0 BITS</span>
+                  <span class="t-micro" id="punch-count">
+                    0 / 0 BITS
+                  </span>
                 </div>
                 <div class="punch-entry">
                   <input
@@ -137,29 +150,48 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
                     spellcheck="false"
                   />
                   <div class="punch-presets">
-                    <button type="button" data-punch-preset="LONE TRAIL">Lone Trail</button>
-                    <button type="button" data-punch-preset="PRESS PROOF">Press Proof</button>
-                    <button type="button" data-punch-preset="SECTOR 04">Sector 04</button>
+                    <button type="button" data-punch-preset="LONE TRAIL">
+                      Lone Trail
+                    </button>
+                    <button type="button" data-punch-preset="PRESS PROOF">
+                      Press Proof
+                    </button>
+                    <button type="button" data-punch-preset="SECTOR 04">
+                      Sector 04
+                    </button>
                   </div>
                 </div>
                 <div class="punch-matrix" id="punch-matrix" aria-live="polite" />
                 <div class="punch-foot">
-                  <span>7-bit · <b>1</b> = punched</span>
-                  <span class="punch-morse" id="punch-morse">—</span>
+                  <span>
+                    7-bit · <b>1</b> = punched
+                  </span>
+                  <span class="punch-morse" id="punch-morse">
+                    —
+                  </span>
                 </div>
               </section>
 
               <div class="morse-bar">
-                <span class="morse-text" data-morse="LONE TRAIL">…</span>
+                <span class="morse-text" data-morse="LONE TRAIL">
+                  …
+                </span>
               </div>
             </div>
           )}
 
           {f.printArtifacts && (
             <div class="cv-marks" data-rev style="--d:360ms">
-              <div class="reg" aria-hidden="true"><i></i><b></b></div>
+              <div class="reg" aria-hidden="true">
+                <i></i>
+                <b></b>
+              </div>
               <div class="colorbar" aria-hidden="true">
-                <i></i><i></i><i></i><i></i><i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
               </div>
               <span class="t-micro">CMYK + 1 spot</span>
             </div>
@@ -181,12 +213,30 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
           )}
 
           <dl class="meta-rows">
-            <div><dt>Archive</dt><dd>{SITE.title}</dd></div>
-            <div><dt>Editor</dt><dd>{SITE.author}</dd></div>
-            <div><dt>Entries</dt><dd>{String(ALL.length).padStart(3, '0')}</dd></div>
-            <div><dt>Words</dt><dd>{totalWords.toLocaleString('en-US')}</dd></div>
-            <div><dt>Updated</dt><dd>{latest ? stampDate(latest.dateObj) : '—'}</dd></div>
-            <div><dt>Serial</dt><dd>{serial}</dd></div>
+            <div>
+              <dt>Archive</dt>
+              <dd>{SITE.title}</dd>
+            </div>
+            <div>
+              <dt>Editor</dt>
+              <dd>{SITE.author}</dd>
+            </div>
+            <div>
+              <dt>Entries</dt>
+              <dd>{String(ALL.length).padStart(3, '0')}</dd>
+            </div>
+            <div>
+              <dt>Words</dt>
+              <dd>{totalWords.toLocaleString('en-US')}</dd>
+            </div>
+            <div>
+              <dt>Updated</dt>
+              <dd>{latest ? stampDate(latest.dateObj) : '—'}</dd>
+            </div>
+            <div>
+              <dt>Serial</dt>
+              <dd>{serial}</dd>
+            </div>
           </dl>
 
           {f.barcode && (
@@ -214,7 +264,6 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
               </div>
             </>
           )}
-
         </aside>
       </div>
 
@@ -235,7 +284,10 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
     {f.destijl && (
       <div class="skin-only" data-only="lone-trail">
         <div class="destijl" aria-hidden="true">
-          <i /><i /><i /><i />
+          <i />
+          <i />
+          <i />
+          <i />
         </div>
       </div>
     )}
@@ -245,11 +297,17 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
 
       <div class="g">
         <div class="c1-7">
-          <h2 class="t-h1" id="index-title" data-rev>Recent entries</h2>
-          <p class="t-cap" style="margin-top:6px">Newest first</p>
+          <h2 class="t-h1" id="index-title" data-rev>
+            Recent entries
+          </h2>
+          <p class="t-cap" style="margin-top:6px">
+            Newest first
+          </p>
 
           <div class="ix-list">
-            {recent.map((post) => <IndexRow post={post} showEn={true} />)}
+            {recent.map((post) => (
+              <IndexRow post={post} showEn={true} />
+            ))}
           </div>
 
           <p style="margin-top:18px">
@@ -265,12 +323,20 @@ const serial = `AR-${String(ALL.length).padStart(3, '0')}-${latest ? latest.year
           <span class="t-outline" data-ode={String(ALL.length)} aria-hidden="true">
             {ALL.length}
           </span>
-          <p class="t-cap" style="margin-top:8px">Since 2026</p>
+          <p class="t-cap" style="margin-top:8px">
+            Since 2026
+          </p>
 
           <div class="sidenote" style="margin-top:22px">
-            <p><b>注 01</b> 每篇都有一个编号，用在索引、脚注和交叉引用里。</p>
-            <p style="margin-top:8px"><b>注 02</b> 归档页按年份分组，索引页按时间倒序。</p>
-            <p style="margin-top:8px"><b>注 03</b> 标签是扁平的，没有层级。</p>
+            <p>
+              <b>注 01</b> 每篇都有一个编号，用在索引、脚注和交叉引用里。
+            </p>
+            <p style="margin-top:8px">
+              <b>注 02</b> 归档页按年份分组，索引页按时间倒序。
+            </p>
+            <p style="margin-top:8px">
+              <b>注 03</b> 标签是扁平的，没有层级。
+            </p>
           </div>
         </div>
       </div>

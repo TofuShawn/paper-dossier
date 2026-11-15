@@ -73,8 +73,8 @@ function makeSampler(variant: string, w: number, h: number): Sampler {
       const stepX = w / 9;
       const stepY = h / 7;
       return (x, y) => {
-        const gx = Math.abs(((x % stepX) / stepX) - 0.5) * 2;
-        const gy = Math.abs(((y % stepY) / stepY) - 0.5) * 2;
+        const gx = Math.abs((x % stepX) / stepX - 0.5) * 2;
+        const gy = Math.abs((y % stepY) / stepY - 0.5) * 2;
         return clamp01(Math.max(gx, gy) ** 2.2);
       };
     }
@@ -85,7 +85,7 @@ function makeSampler(variant: string, w: number, h: number): Sampler {
       return (x, y) => {
         const u = x / w;
         const v = y / h;
-        const body = Math.exp(-((u - 0.5) ** 2) * 9 - ((v - 0.62) ** 2) * 14) * 1.25;
+        const body = Math.exp(-((u - 0.5) ** 2) * 9 - (v - 0.62) ** 2 * 14) * 1.25;
         const disc = Math.exp(-(((u - 0.68) ** 2 + (v - 0.3) ** 2) * 90)) * 1.1;
         const horizon = v > 0.78 ? 0.42 * clamp01(1 - (v - 0.78) * 4.5) : 0;
         return clamp01(body + disc + horizon);
@@ -293,7 +293,7 @@ function initToc() {
         mark();
       });
     },
-    { passive: true },
+    { passive: true }
   );
 
   mark();
@@ -352,8 +352,7 @@ function initSeal() {
 /* stagger                                                                     */
 /* -------------------------------------------------------------------------- */
 
-const STAGGER_GROUPS =
-  '.ix-list, .tag-cloud, .meta-rows, .post-nav, .toc ol, .stag-group';
+const STAGGER_GROUPS = '.ix-list, .tag-cloud, .meta-rows, .post-nav, .toc ol, .stag-group';
 const STAGGER_STEP = 38;
 const STAGGER_DUR = 700;
 
@@ -361,9 +360,7 @@ const STAGGER_DUR = 700;
 function release(group: HTMLElement) {
   group.classList.remove('in');
   delete group.dataset.stag;
-  Array.from(group.children).forEach((kid) =>
-    (kid as HTMLElement).style.removeProperty('--i'),
-  );
+  Array.from(group.children).forEach((kid) => (kid as HTMLElement).style.removeProperty('--i'));
 }
 
 /**
@@ -390,7 +387,7 @@ function initStagger() {
   const armed: Array<{ el: HTMLElement; fire: () => void }> = [];
 
   const groups = Array.from(document.querySelectorAll<HTMLElement>(STAGGER_GROUPS)).filter(
-    (g) => g.children.length > 0,
+    (g) => g.children.length > 0
   );
 
   groups.forEach((group) => {
@@ -454,9 +451,7 @@ function boot() {
   initRail({ skin: 'terminal' });
 
   const sealed =
-    !noSeal &&
-    !!document.getElementById('term-seal') &&
-    document.body.classList.contains('locked');
+    !noSeal && !!document.getElementById('term-seal') && document.body.classList.contains('locked');
 
   if (!motion) {
     document.getElementById('term-seal')?.classList.add('off');

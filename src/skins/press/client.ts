@@ -74,8 +74,8 @@ function makeSampler(variant: string, w: number, h: number): Sampler {
       const stepX = w / 9;
       const stepY = h / 7;
       return (x, y) => {
-        const gx = Math.abs(((x % stepX) / stepX) - 0.5) * 2;
-        const gy = Math.abs(((y % stepY) / stepY) - 0.5) * 2;
+        const gx = Math.abs((x % stepX) / stepX - 0.5) * 2;
+        const gy = Math.abs((y % stepY) / stepY - 0.5) * 2;
         return clamp01(Math.max(gx, gy) ** 2.2);
       };
     }
@@ -84,7 +84,7 @@ function makeSampler(variant: string, w: number, h: number): Sampler {
       return (x, y) => {
         const u = x / w;
         const v = y / h;
-        const body = Math.exp(-((u - 0.5) ** 2) * 9 - ((v - 0.62) ** 2) * 14) * 1.25;
+        const body = Math.exp(-((u - 0.5) ** 2) * 9 - (v - 0.62) ** 2 * 14) * 1.25;
         const disc = Math.exp(-(((u - 0.68) ** 2 + (v - 0.3) ** 2) * 90)) * 1.1;
         const horizon = v > 0.78 ? 0.42 * clamp01(1 - (v - 0.78) * 4.5) : 0;
         return clamp01(body + disc + horizon);
@@ -268,7 +268,7 @@ function initHud() {
         queued = false;
       });
     },
-    { passive: true },
+    { passive: true }
   );
 }
 
@@ -334,7 +334,7 @@ function initToc() {
         links.forEach((a) => a.classList.toggle('on', a.hash.slice(1) === e.target.id));
       }
     },
-    { rootMargin: '-15% 0px -70% 0px', threshold: 0 },
+    { rootMargin: '-15% 0px -70% 0px', threshold: 0 }
   );
 
   targets.forEach((t) => io.observe(t));
@@ -361,7 +361,6 @@ function boot() {
   // asked for reduced motion, or the native bar stays hidden with nothing in
   // its place. `initRail` gates on `js-rail`, not on `.js-motion`.
   initRail({ skin: 'press' });
-
 
   const sealed =
     !noSeal && !!document.getElementById('unseal') && document.body.classList.contains('locked');

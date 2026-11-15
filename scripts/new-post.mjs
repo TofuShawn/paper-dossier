@@ -29,7 +29,15 @@ const POSTS_DIR = join(process.cwd(), 'src', 'content', 'posts');
 
 /** The tag vocabulary the sample posts ship with. Not binding — see WRITING.md. */
 const KNOWN_TAGS = [
-  'design', 'writing', 'typography', 'print', 'grids', 'archives', 'notes', 'colour', 'canvas',
+  'design',
+  'writing',
+  'typography',
+  'print',
+  'grids',
+  'archives',
+  'notes',
+  'colour',
+  'canvas',
 ];
 
 /** Tag → code prefix, from WRITING.md. Order matters: first match wins. */
@@ -147,7 +155,7 @@ async function main() {
         'Flags: --title --slug --description --date --tags --code --note --dry-run',
         '',
         'See WRITING.md for what makes a good post.',
-      ].join('\n'),
+      ].join('\n')
     );
     return;
   }
@@ -204,19 +212,31 @@ async function main() {
 
     let tags = [];
     if (typeof args.tags === 'string') {
-      tags = args.tags.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean);
+      tags = args.tags
+        .split(',')
+        .map((t) => t.trim().toLowerCase())
+        .filter(Boolean);
     } else if (rl) {
-      const answer = (await rl.question(`Tags, comma separated [${KNOWN_TAGS.slice(0, 5).join(', ')}…]: `)).trim();
-      tags = answer ? answer.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean) : [];
+      const answer = (
+        await rl.question(`Tags, comma separated [${KNOWN_TAGS.slice(0, 5).join(', ')}…]: `)
+      ).trim();
+      tags = answer
+        ? answer
+            .split(',')
+            .map((t) => t.trim().toLowerCase())
+            .filter(Boolean)
+        : [];
     }
 
     const isNote = Boolean(args.note);
     if (!isNote && rl) {
-      const answer = (await rl.question('Mode — [e]ntry (default) or [n]ote: ')).trim().toLowerCase();
+      const answer = (await rl.question('Mode — [e]ntry (default) or [n]ote: '))
+        .trim()
+        .toLowerCase();
       if (answer.startsWith('n')) args.note = true;
     }
 
-    let date = typeof args.date === 'string' ? args.date : today();
+    const date = typeof args.date === 'string' ? args.date : today();
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       console.error(`× --date must be YYYY-MM-DD, got "${date}".`);
       process.exit(1);
@@ -241,7 +261,9 @@ async function main() {
     // ---- warnings, not errors -------------------------------------------
     const warnings = [];
     if (!description) {
-      warnings.push('`description` is empty — required by the schema, fill it in or the build fails.');
+      warnings.push(
+        '`description` is empty — required by the schema, fill it in or the build fails.'
+      );
     }
     if (/[,:]/.test(title)) {
       // Not a problem: we quote it. Noted so the reader knows it was handled.
@@ -254,11 +276,13 @@ async function main() {
       warnings.push(
         `Tag(s) outside the sample vocabulary: ${unknown.join(', ')}. ` +
           'Fine if this is your own archive — the sample nine are a placeholder. ' +
-          'Keep the final list small: /tags/ is a ruled register, one row per tag.',
+          'Keep the final list small: /tags/ is a ruled register, one row per tag.'
       );
     }
     if (!code) {
-      warnings.push('No `code` set — the index will show the first 8 characters of the slug, uppercased.');
+      warnings.push(
+        'No `code` set — the index will show the first 8 characters of the slug, uppercased.'
+      );
     }
     if (isNote && tags.length > 3) {
       warnings.push(`A note has ${tags.length} tags. Notes carry one or two.`);

@@ -65,6 +65,9 @@ docker/
   nginx.conf           routing, caching, compression, 404
   security-headers.conf  the add_header set every location must include
 Dockerfile             two-stage: node build → nginx serve
+.github/
+  workflows/verify.yml lint → format → contract → build → container
+  dependabot.yml       npm, Actions and base images
 ```
 
 ## Quick start
@@ -149,6 +152,65 @@ the runner serves them from `dist/` — a probe served from `scripts/` would be 
 different origin and every measurement would silently come back empty. Full
 catalogue, the conventions for writing one, and when to delete one:
 [docs/PROBES.md](docs/PROBES.md).
+
+## Checks, and what each one defends
+
+Five gates, in the order they fail. The first three run in a second and need
+nothing but Node; the last two need Docker.
+
+```bash
+npm run lint          # eslint .            — defects, not style
+npm run format:check  # prettier --check .  — layout, so review can be about code
+npm run check         # the skin contract   — tokens, colour containment
+npm run verify        # build + 7 routes    — every route, with its furniture
+npm run verify:docker # the running image   — headers, redirects, caching
+```
+
+| Command | Catches | Runs on |
+| --- | --- | --- |
+| `lint` | A floating promise in a build script (passes `build`, fails silently later), a variable that is never used, an unreachable branch | every push |
+| `format:check` | Nothing functional — it exists so that formatting is never a review comment | every push |
+| `check` | A skin that forgot a `REQUIRED_TOKENS` entry, or a colour literal outside `src/skins/` | every push |
+| `verify` | A route that stopped being generated, a skin that lost its advertised furniture, a feed that no longer matches the content | every push |
+| `verify:docker` | A `Location` header that drops the port, a missing security header, HTML cached immutably | every push |
+
+### Where the dividing lines are
+
+- **ESLint and Prettier do not overlap.** No stylistic rule is enabled in
+  `eslint.config.mjs`, so there is no conflict to resolve and no
+  `eslint-config-prettier` to maintain. Prettier decides how code looks; ESLint
+  decides whether it is wrong.
+- **`.css` and `*.md` are not formatted.** `.prettierignore` explains why: the
+  skin stylesheets are hand-set typography written one declaration per line, and
+  Prettier would turn a one-line rule into four, producing a few thousand lines
+  of diff that change no rendered pixel. Markdown is reformatted into
+  whole-table diffs for a one-word edit.
+- **The probes are not in CI.** They measure geometry, and a probe "failing"
+  means a design changed — which is a decision, not a defect. See
+  [docs/PROBES.md](docs/PROBES.md).
+- **`Chrome.astro`'s canvas scene keeps `var`.** It is 250 lines of ES5 drawing
+  code whose output is pixels; converting to `let` with no test that can assert
+  the picture is unchanged is how a colour shifts silently. The exemption is
+  scoped to that one file in `eslint.config.mjs`.
+
+The settings that look arbitrary and are not — `trailingComma: "es5"`, the
+ignored file types, the scoped `no-var` exemption — are explained in
+[docs/TOOLING.md](docs/TOOLING.md). Read it before changing any of them.
+
+### Keeping dependencies current
+
+`.github/dependabot.yml` runs three ecosystems:
+
+| Ecosystem | Cadence | Grouping |
+| --- | --- | --- |
+| npm — tooling | weekly | one PR per minor/patch batch |
+| npm — `astro`, `@astrojs/*`, `zod` | weekly | one PR per package, because these decide what HTML ships |
+| GitHub Actions | monthly | one PR |
+| Docker base images | monthly | one PR |
+
+Major versions stay out of the npm groups, so an Astro major arrives as its own
+reviewable PR rather than inside a three-package bump. Every one of these PRs is
+gated by the same five commands above.
 
 ## Template and content are two layers
 

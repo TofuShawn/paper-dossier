@@ -39,10 +39,10 @@ services:
     image: ${BLOG_NAME:-archive-blog}:local
     container_name: ${BLOG_NAME:-archive-blog}
     ports:
-      - "${BLOG_PORT:-4322}:80"
+      - '${BLOG_PORT:-4322}:80'
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1/']
       interval: 30s
       timeout: 3s
       retries: 3

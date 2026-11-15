@@ -11,7 +11,11 @@ export async function GET(context: APIContext) {
     { loc: '/posts/', priority: '0.9' },
     { loc: '/tags/', priority: '0.6' },
     { loc: '/about/', priority: '0.5' },
-    ...POSTS.map((p) => ({ loc: `/posts/${p.slug}/`, priority: '0.8', lastmod: p.updatedObj ?? p.dateObj })),
+    ...POSTS.map((p) => ({
+      loc: `/posts/${p.slug}/`,
+      priority: '0.8',
+      lastmod: p.updatedObj ?? p.dateObj,
+    })),
   ];
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
@@ -21,7 +25,7 @@ ${urls
     (u) => `  <url>
     <loc>${base}${u.loc}</loc>${u.lastmod ? `\n    <lastmod>${u.lastmod.toISOString().slice(0, 10)}</lastmod>` : ''}
     <priority>${u.priority}</priority>
-  </url>`,
+  </url>`
   )
   .join('\n')}
 </urlset>`;

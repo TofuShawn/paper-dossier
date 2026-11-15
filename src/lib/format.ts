@@ -1,9 +1,6 @@
 /** Date formatting. Fixed to en-GB ordering so the layout never shifts by locale. */
 
-const MONTHS = [
-  'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-  'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
-];
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
 /** "2026.02.14" — the dossier style. */
 export function stampDate(d: Date): string {

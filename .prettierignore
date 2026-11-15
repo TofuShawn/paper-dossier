@@ -1,0 +1,50 @@
+# What Prettier is allowed to own.
+#
+# Only the code that a formatter can usefully decide: `.ts`, `.astro`, `.mjs`,
+# the JSON config files, and the two YAML-ish deployment files. Everything else
+# in this repository is either generated, machine-local, or deliberately
+# hand-set — see the reasons below each entry.
+
+# Build output, dependencies, generated stylesheet.
+dist/
+node_modules/
+.astro/
+.npm-cache/
+src/skins/.generated/
+
+# Machine-local. Real conversation text and ~100MB of screenshots live here;
+# nothing in it is published, so nothing in it needs a house style.
+.local/
+
+# Screenshot passes and reference captures — binary, ~62MB.
+docs/shots*/
+docs/ref/
+public/plates/
+
+# ---------------------------------------------------------------------------
+# Print sheets and probe pages: hand-set, and Prettier makes them worse.
+#
+# `skin.css` (up to 3000 lines across five skins) and `base.css` are typography
+# and grid rules written one declaration per line by hand — `.cropmarks .tl {
+# top: 14px; left: 14px; }` on one line because that is how you read a set of
+# four corners. Prettier explodes each of those into four lines, and the diff is
+# a few thousand lines that changes no rendered pixel. The files are instead
+# governed by `npm run check` (tokens, colour containment) and by the probes,
+# which is the only governance that matters for CSS here.
+#
+# The probe pages are the same argument with a shorter history: each is a
+# throwaway harness written to answer one question, most are under 150 lines,
+# and none of them ship (`scripts/*.html` is excluded from the Docker image).
+# Formatting them would produce churn in files whose whole purpose is to be
+# read once and then either kept as evidence or deleted.
+*.css
+scripts/*.html
+
+# ---------------------------------------------------------------------------
+# Prose. Prettier reflows Markdown and aligns tables to the widest cell, which
+# turns a one-line edit into a whole-table diff. The four root guides are read
+# by humans on GitHub and are not code; the editor decides their shape.
+*.md
+
+# npm's own file. `npm install` rewrites it with its own formatting.
+package-lock.json

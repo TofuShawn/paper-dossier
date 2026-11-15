@@ -13,7 +13,11 @@
     "verify": "npm run build && node scripts/verify.mjs",
     "verify:docker": "node scripts/verify-docker.mjs",
     "test:verify": "node scripts/test-verify-docker.mjs",
-    "probe": "node scripts/probe.mjs"
+    "probe": "node scripts/probe.mjs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -38,5 +42,14 @@
     "print",
     "typography",
     "static-site"
-  ]
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-astro": "^1.7.0",
+    "globals": "^15.15.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript-eslint": "^8.72.2"
+  }
 }

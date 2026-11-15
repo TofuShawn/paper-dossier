@@ -39,7 +39,7 @@ export function onEnter(els: Element[], fn: (el: Element) => void, threshold = 0
         fn(e.target);
       }
     },
-    { threshold },
+    { threshold }
   );
   els.forEach((el) => io.observe(el));
 }
@@ -75,7 +75,7 @@ export function scramble(el: HTMLElement, opts: ScrambleOpts = {}): void {
       lastRoll = now;
       tailText = Array.from(
         { length: tail },
-        () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
+        () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
       ).join('');
     }
 
@@ -93,8 +93,7 @@ export function scramble(el: HTMLElement, opts: ScrambleOpts = {}): void {
 
 /** Count up to `to`. Snaps to the exact formatted value on the last frame. */
 export function ode(el: HTMLElement, to: number, dec = 0, duration = 1500): void {
-  const fmt = (n: number) =>
-    dec > 0 ? n.toFixed(dec) : Math.floor(n).toLocaleString('en-US');
+  const fmt = (n: number) => (dec > 0 ? n.toFixed(dec) : Math.floor(n).toLocaleString('en-US'));
 
   if (reduceMotion()) {
     el.textContent = fmt(to);
@@ -144,7 +143,7 @@ export function bootReveals(paintPlate: (cv: HTMLCanvasElement) => void) {
     el.classList.add('in');
     el.querySelectorAll<HTMLElement>('[data-scramble]').forEach((s) => scramble(s));
     el.querySelectorAll<HTMLElement>('[data-ode]').forEach((o) =>
-      ode(o, Number(o.dataset.ode), Number(o.dataset.dec ?? 0)),
+      ode(o, Number(o.dataset.ode), Number(o.dataset.dec ?? 0))
     );
     el.querySelectorAll<HTMLCanvasElement>('canvas[data-plate]').forEach(paintPlate);
     if (el.matches('canvas[data-plate]')) paintPlate(el as HTMLCanvasElement);
@@ -152,12 +151,12 @@ export function bootReveals(paintPlate: (cv: HTMLCanvasElement) => void) {
 
   // Plates and counters that live outside any reveal block.
   const loose = Array.from(
-    document.querySelectorAll<HTMLCanvasElement>('canvas[data-plate]'),
+    document.querySelectorAll<HTMLCanvasElement>('canvas[data-plate]')
   ).filter((cv) => !cv.closest('[data-rev]'));
   onEnter(loose, (el) => paintPlate(el as HTMLCanvasElement), 0.3);
 
   const looseOde = Array.from(document.querySelectorAll<HTMLElement>('[data-ode]')).filter(
-    (o) => !o.closest('[data-rev]'),
+    (o) => !o.closest('[data-rev]')
   );
   onEnter(
     looseOde,
@@ -165,7 +164,7 @@ export function bootReveals(paintPlate: (cv: HTMLCanvasElement) => void) {
       const o = el as HTMLElement;
       ode(o, Number(o.dataset.ode), Number(o.dataset.dec ?? 0));
     },
-    0.3,
+    0.3
   );
 }
 
@@ -173,9 +172,9 @@ export function bootReveals(paintPlate: (cv: HTMLCanvasElement) => void) {
 export function settleEverything(paintPlate: (cv: HTMLCanvasElement) => void) {
   document.querySelectorAll<HTMLElement>('[data-rev]').forEach((el) => el.classList.add('in'));
   document.querySelectorAll<HTMLCanvasElement>('canvas[data-plate]').forEach(paintPlate);
-  document.querySelectorAll<HTMLElement>('[data-ode]').forEach((o) =>
-    ode(o, Number(o.dataset.ode), Number(o.dataset.dec ?? 0), 1),
-  );
+  document
+    .querySelectorAll<HTMLElement>('[data-ode]')
+    .forEach((o) => ode(o, Number(o.dataset.ode), Number(o.dataset.dec ?? 0), 1));
 }
 
 /** Adds `js-motion` only when motion is both wanted and possible. */

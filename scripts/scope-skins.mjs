@@ -122,12 +122,20 @@ function scopeSelector(sel, id) {
 }
 
 /** At-rules that describe definitions rather than elements. Scoping them breaks them. */
-const UNSCOPABLE = ['font-face', 'keyframes', 'property', 'counter-style', 'page', 'charset', 'import'];
+const UNSCOPABLE = [
+  'font-face',
+  'keyframes',
+  'property',
+  'counter-style',
+  'page',
+  'charset',
+  'import',
+];
 
 /**
  * Pull leading comments off a chunk. They are prose about the rule that
  * follows, not part of its selector — if left in place they end up glued to
- * the front of the scoped selector (`:root[data-skin='x'] /* note *​/ .foo`),
+ * the front of the scoped selector, glued between the scope and the rule.
  * which is still valid CSS but unreadable and breaks naive selector matching.
  */
 function splitLeadingComments(chunk) {
@@ -198,5 +206,9 @@ const wrappers = dirs
   .map((id) => `:root[data-skin='${id}'] .skin-only[data-only='${id}'] { display: contents; }`)
   .join('\n');
 
-writeFileSync(OUT, parts.join('\n') + `\n/* ==== furniture wrappers ==== */\n${wrappers}\n`, 'utf8');
+writeFileSync(
+  OUT,
+  parts.join('\n') + `\n/* ==== furniture wrappers ==== */\n${wrappers}\n`,
+  'utf8'
+);
 console.log(`scoped ${dirs.length} skin(s) -> ${OUT}`);

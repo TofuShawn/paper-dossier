@@ -22,12 +22,18 @@ const posts = getPostsByTag(tag);
     <section class="spread">
       <RunningHead no="05" title={tag} en={`${count} entries`} />
 
-      <h1 class="t-display" data-rev>{tag}</h1>
-      <p class="t-cap" style="margin-top:12px">{count} entries under this label</p>
+      <h1 class="t-display" data-rev>
+        {tag}
+      </h1>
+      <p class="t-cap" style="margin-top:12px">
+        {count} entries under this label
+      </p>
 
       <div class="g" style="margin-top:30px">
         <div class="c1-8 stag-group">
-          {posts.map((p) => <IndexRow post={p} mark={p.displayCode} />)}
+          {posts.map((p) => (
+            <IndexRow post={p} mark={p.displayCode} />
+          ))}
         </div>
       </div>
 

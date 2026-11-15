@@ -30,70 +30,83 @@ const TICKER = [
 ];
 ---
 
-{
-  f.crt && (
-    <>
-      <div class="crt-scanlines" aria-hidden="true" />
-      <div class="crt-beam" aria-hidden="true" />
-      <button
-        class="fx-toggle"
-        id="fxtoggle"
-        type="button"
-        aria-pressed="true"
-        aria-label="Toggle CRT scanlines"
-        title="Scanlines — press S"
-      >
-        <span class="fx-bar" aria-hidden="true"><i /><i /><i /></span>
+{f.crt && (
+  <>
+    <div class="crt-scanlines" aria-hidden="true" />
+    <div class="crt-beam" aria-hidden="true" />
+    <button
+      class="fx-toggle"
+      id="fxtoggle"
+      type="button"
+      aria-pressed="true"
+      aria-label="Toggle CRT scanlines"
+      title="Scanlines — press S"
+    >
+      <span class="fx-bar" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+    </button>
+  </>
+)}
+
+{f.marquee && (
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      {[0, 1].map(() => (
+        <span class="ticker-run">
+          {TICKER.map((t) => (
+            <span class="ticker-item">
+              <i />
+              {t}
+            </span>
+          ))}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
+
+{showSeal && (
+  <div
+    class="launch"
+    id="lt-launch"
+    data-ceremony
+    role="dialog"
+    aria-label="Enter the control room"
+  >
+    <div class="launch-grid" aria-hidden="true">
+      <span />
+      <span />
+      <span />
+    </div>
+    <div class="launch-body">
+      <p class="launch-kicker">Control room // Pre-flight</p>
+      <p class="launch-count" aria-hidden="true">
+        T-<span id="lt-count">00:00:04</span>
+      </p>
+      <button class="launch-btn" type="button" aria-label="Enter the control room">
+        Enter
       </button>
-    </>
-  )
-}
-
-{
-  f.marquee && (
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        {[0, 1].map(() => (
-          <span class="ticker-run">
-            {TICKER.map((t) => (
-              <span class="ticker-item">
-                <i />
-                {t}
-              </span>
-            ))}
-          </span>
-        ))}
-      </div>
+      <p class="launch-note">Press Enter or click · Skip with ?skip=1</p>
     </div>
-  )
-}
-
-{
-  showSeal && (
-    <div class="launch" id="lt-launch" data-ceremony role="dialog" aria-label="Enter the control room">
-      <div class="launch-grid" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div class="launch-body">
-        <p class="launch-kicker">Control room // Pre-flight</p>
-        <p class="launch-count" aria-hidden="true">
-          T-<span id="lt-count">00:00:04</span>
-        </p>
-        <button class="launch-btn" type="button" aria-label="Enter the control room">
-          Enter
-        </button>
-        <p class="launch-note">Press Enter or click · Skip with ?skip=1</p>
-      </div>
-    </div>
-  )
-}
+  </div>
+)}
 
 <div class="rail" data-rail aria-hidden="true">
-  <div class="rail-ticks"><i /><i /><i /><i /><i /><i /></div>
+  <div class="rail-ticks">
+    <i />
+    <i />
+    <i />
+    <i />
+    <i />
+    <i />
+  </div>
   <div class="rail-thumb" data-rail-thumb>
-    <b class="rail-pct"><span data-rail-pct>000</span></b>
+    <b class="rail-pct">
+      <span data-rail-pct>000</span>
+    </b>
   </div>
 </div>
 
@@ -101,17 +114,13 @@ const TICKER = [
   import './client';
 </script>
 
-{
-  showSeal && (
-    <script is:inline>
-      // If the client bundle never loads, the overlay must not trap the page.
-      setTimeout(function () {
-        var o = document.getElementById('lt-launch');
-        if (o && !o.classList.contains('off')) {
-          o.classList.add('off');
-          document.body.classList.remove('locked');
-        }
-      }, 8000);
-    </script>
-  )
-}
+{showSeal && <script is:inline>
+  // If the client bundle never loads, the overlay must not trap the page.
+  setTimeout(function () {
+    const o = document.getElementById('lt-launch');
+    if (o && !o.classList.contains('off')) {
+      o.classList.add('off');
+      document.body.classList.remove('locked');
+    }
+  }, 8000);
+</script>}

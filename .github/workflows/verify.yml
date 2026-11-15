@@ -1,0 +1,96 @@
+name: Verify
+
+# What this gate defends, in the order it fails:
+#
+#   lint     the code parses and has no obvious defect (a floating promise in a
+#            build script passes `build` and fails silently in production)
+#   format   nobody argues about layout in review
+#   check    the project's own invariants — every skin defines every contract
+#            token, and no colour literal lives outside `src/skins/`
+#   verify   the build produces all seven routes, and each carries the
+#            furniture its skin advertises
+#
+# `npm run verify` already runs `check` and `build`; they are listed as separate
+# steps so a failure names which invariant broke instead of surfacing as one
+# red step. `npm run verify` then re-runs them — deliberate, and cheap (the whole
+# build is about a second).
+#
+# What this does NOT run: `scripts/*.html` probes. They need a real Chrome and
+# they measure geometry, not correctness — a probe "failing" means a design
+# changed, not that the code is broken. Run them locally; see docs/PROBES.md.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A second push to the same branch makes the first run's result irrelevant.
+# Cancel it rather than spend a runner proving an already-superseded commit.
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Matches the `node:24-alpine` stage in the Dockerfile, so a failure
+          # here is reproducible in the image that actually ships.
+          node-version: 24
+          cache: npm
+
+      # `npm ci` rather than `npm install`: it installs exactly the lockfile and
+      # fails if `package.json` and the lockfile disagree, which is the drift
+      # this repository has had to fix by hand before.
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      # Runs before the build because `scope-skins.mjs` writes the generated
+      # stylesheet that the build imports. A token missing from one skin is a
+      # compile error downstream, so catching it here gives the real message.
+      - name: Skin contract
+        run: npm run check
+
+      - name: Build and verify routes
+        run: npm run verify
+
+      # The image is what gets deployed, and `verify` only proves the HTML on
+      # this runner is right. This asserts the two-stage build still succeeds
+      # and that nginx serves the result — the thing a broken Dockerfile would
+      # break without any HTML test noticing.
+      - name: Docker build
+        run: docker build -t paper-dossier:ci .
+
+      - name: Serve in the container and check headers
+        run: |
+          docker run -d --name ci-site -p 4322:80 paper-dossier:ci
+          # The container has its own healthcheck; give nginx a moment to bind.
+          for i in $(seq 1 20); do
+            if curl -fsS -o /dev/null http://127.0.0.1:4322/; then break; fi
+            sleep 1
+          done
+          node scripts/verify-docker.mjs http://127.0.0.1:4322
+
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs ci-site || true
+
+      - name: Stop container
+        if: always()
+        run: docker rm -f ci-site || true

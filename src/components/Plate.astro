@@ -44,20 +44,18 @@ const anyPaint = featuresAny().halftone || featuresAny().scanline;
 ---
 
 <figure class="plate" style={`aspect-ratio:${ratio}`} data-figure-label={tag}>
-  {
-    anyPaint ? (
-      <canvas
-        data-plate={variant}
-        data-cell={cell}
-        role="img"
-        aria-label={alt || caption || tag || 'Figure'}
-      />
-    ) : src ? (
-      <img src={src} alt={alt} loading="lazy" />
-    ) : (
-      <div role="img" aria-label={alt || caption || 'Figure'} />
-    )
-  }
+  {anyPaint ? (
+    <canvas
+      data-plate={variant}
+      data-cell={cell}
+      role="img"
+      aria-label={alt || caption || tag || 'Figure'}
+    />
+  ) : src ? (
+    <img src={src} alt={alt} loading="lazy" />
+  ) : (
+    <div role="img" aria-label={alt || caption || 'Figure'} />
+  )}
   {tag && <span class="plate-tag">{tag}</span>}
   {caption && <figcaption class="plate-cap">{caption}</figcaption>}
 </figure>

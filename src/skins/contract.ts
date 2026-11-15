@@ -12,20 +12,20 @@
 /** Every custom property a skin must define. Adding one here is a breaking change. */
 export const REQUIRED_TOKENS = [
   // --- surface -------------------------------------------------------------
-  '--bg',            // page background, outside the content sheet
-  '--bg-sheet',      // the content sheet itself
-  '--bg-elev',       // a raised panel inside the sheet (figure plate, table zebra)
-  '--fg',            // primary text / structural rules
-  '--fg-soft',       // body copy
-  '--fg-mute',       // captions, metadata, footnotes
-  '--rule',          // a rule you are meant to see
-  '--rule-soft',     // a divider you are meant to feel, not see
+  '--bg', // page background, outside the content sheet
+  '--bg-sheet', // the content sheet itself
+  '--bg-elev', // a raised panel inside the sheet (figure plate, table zebra)
+  '--fg', // primary text / structural rules
+  '--fg-soft', // body copy
+  '--fg-mute', // captions, metadata, footnotes
+  '--rule', // a rule you are meant to see
+  '--rule-soft', // a divider you are meant to feel, not see
 
   // --- accent --------------------------------------------------------------
-  '--accent',        // the one accent colour; decorative share must stay small
-  '--accent-text',   // same hue, darkened until it passes 4.5:1 as small text
-  '--accent-soft',   // accent at low alpha, for fills
-  '--on-accent',     // text that sits on a solid accent fill
+  '--accent', // the one accent colour; decorative share must stay small
+  '--accent-text', // same hue, darkened until it passes 4.5:1 as small text
+  '--accent-soft', // accent at low alpha, for fills
+  '--on-accent', // text that sits on a solid accent fill
 
   // --- type ----------------------------------------------------------------
   '--font-display',
@@ -45,8 +45,8 @@ export const REQUIRED_TOKENS = [
   '--tracking-caps',
 
   // --- layout --------------------------------------------------------------
-  '--measure',       // content width
-  '--margin',        // horizontal page margin inside the sheet
+  '--measure', // content width
+  '--margin', // horizontal page margin inside the sheet
   '--gutter',
   '--baseline',
   '--radius',

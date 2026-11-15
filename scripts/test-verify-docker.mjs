@@ -35,6 +35,10 @@ const stale = `
 
 const a = scan(current);
 const b = scan(stale);
-console.log(`current bundle: ${a.length === 0 ? 'PASS (correct)' : 'FAIL (false negative: ' + a.map((p) => p[1]).join(',') + ')'}`);
-console.log(`stale bundle:   ${b.length === 4 ? 'FAIL as intended (all 4 rules caught)' : 'NOT CAUGHT — check is blind to ' + (4 - b.length) + ' rule(s)'}`);
+console.log(
+  `current bundle: ${a.length === 0 ? 'PASS (correct)' : 'FAIL (false negative: ' + a.map((p) => p[1]).join(',') + ')'}`
+);
+console.log(
+  `stale bundle:   ${b.length === 4 ? 'FAIL as intended (all 4 rules caught)' : 'NOT CAUGHT — check is blind to ' + (4 - b.length) + ' rule(s)'}`
+);
 process.exit(a.length === 0 && b.length === 4 ? 0 : 1);

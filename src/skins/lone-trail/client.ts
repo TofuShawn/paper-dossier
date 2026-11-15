@@ -14,7 +14,6 @@ import {
   clamp01,
   dpr,
   enableMotion,
-  hash,
   onEnter,
   reduceMotion,
   scramble,
@@ -176,7 +175,7 @@ export function scanlineSphere(cv: HTMLCanvasElement): void {
         }
       }
     },
-    { threshold: 0.05 },
+    { threshold: 0.05 }
   );
 
   paint(0);
@@ -190,11 +189,42 @@ export function scanlineSphere(cv: HTMLCanvasElement): void {
 /* -------------------------------------------------------------------------- */
 
 const MORSE: Record<string, string> = {
-  A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.', G: '--.', H: '....',
-  I: '..', J: '.---', K: '-.-', L: '.-..', M: '--', N: '-.', O: '---', P: '.--.',
-  Q: '--.-', R: '.-.', S: '...', T: '-', U: '..-', V: '...-', W: '.--', X: '-..-',
-  Y: '-.--', Z: '--..', '0': '-----', '1': '.----', '2': '..---', '3': '...--',
-  '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+  A: '.-',
+  B: '-...',
+  C: '-.-.',
+  D: '-..',
+  E: '.',
+  F: '..-.',
+  G: '--.',
+  H: '....',
+  I: '..',
+  J: '.---',
+  K: '-.-',
+  L: '.-..',
+  M: '--',
+  N: '-.',
+  O: '---',
+  P: '.--.',
+  Q: '--.-',
+  R: '.-.',
+  S: '...',
+  T: '-',
+  U: '..-',
+  V: '...-',
+  W: '.--',
+  X: '-..-',
+  Y: '-.--',
+  Z: '--..',
+  '0': '-----',
+  '1': '.----',
+  '2': '..---',
+  '3': '...--',
+  '4': '....-',
+  '5': '.....',
+  '6': '-....',
+  '7': '--...',
+  '8': '---..',
+  '9': '----.',
 };
 
 export function toMorse(text: string): string {
@@ -312,7 +342,10 @@ function initCrt() {
     const off = html.classList.toggle('fx-off');
     try {
       localStorage.setItem('fx', off ? 'off' : 'on');
-    } catch (e) {}
+    } catch (e) {
+      // Private mode and some embedded webviews refuse storage. The toggle has
+      // already repainted; the only thing lost is the preference.
+    }
     // An explicit click outranks a pinned `?fx=` in the URL, or a later
     // navigation would silently undo the choice.
     try {
@@ -321,7 +354,11 @@ function initCrt() {
         url.searchParams.delete('fx');
         history.replaceState(null, '', url.href);
       }
-    } catch (e) {}
+    } catch (e) {
+      // `replaceState` is blocked on opaque origins and throttled in some
+      // contexts. A URL that still says `?fx=` is harmless — the class above
+      // already reflects the click.
+    }
     paint();
   });
 
@@ -502,7 +539,7 @@ function initToc() {
         links.forEach((a) => a.classList.toggle('on', a.hash.slice(1) === e.target.id));
       }
     },
-    { rootMargin: '-15% 0px -70% 0px', threshold: 0 },
+    { rootMargin: '-15% 0px -70% 0px', threshold: 0 }
   );
 
   targets.forEach((t) => io.observe(t));
@@ -530,9 +567,7 @@ const STAGGER_DUR = 700;
 function release(group: HTMLElement) {
   group.classList.remove('in');
   delete group.dataset.stag;
-  Array.from(group.children).forEach((kid) =>
-    (kid as HTMLElement).style.removeProperty('--i'),
-  );
+  Array.from(group.children).forEach((kid) => (kid as HTMLElement).style.removeProperty('--i'));
 }
 
 /**
@@ -563,9 +598,9 @@ function initStagger() {
   /** Groups still waiting to play, with the callback that starts them. */
   const armed: Array<{ el: HTMLElement; fire: () => void }> = [];
 
-  const groups = Array.from(
-    document.querySelectorAll<HTMLElement>(STAGGER_GROUPS),
-  ).filter((g) => g.children.length > 0);
+  const groups = Array.from(document.querySelectorAll<HTMLElement>(STAGGER_GROUPS)).filter(
+    (g) => g.children.length > 0
+  );
 
   groups.forEach((group) => {
     const kids = Array.from(group.children) as HTMLElement[];

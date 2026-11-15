@@ -32,7 +32,9 @@ const MIME = {
 async function resolve(urlPath) {
   // Strip query/hash, decode, and refuse anything that escapes `dir`.
   const clean = decodeURIComponent(urlPath.split('?')[0].split('#')[0]);
-  const rel = normalize(clean).replace(/^(\.\.[/\\])+/, '').replace(/^[/\\]+/, '');
+  const rel = normalize(clean)
+    .replace(/^(\.\.[/\\])+/, '')
+    .replace(/^[/\\]+/, '');
   const base = join(dir, rel);
   if (!base.startsWith(dir)) return null;
 

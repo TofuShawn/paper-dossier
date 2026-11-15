@@ -80,7 +80,7 @@ export async function runChecks() {
         if (missing.length) {
           errors.push(
             `src/skins/${dir}/skin.css: missing ${missing.length} required token(s):\n` +
-              missing.map((t) => `      ${t}`).join('\n'),
+              missing.map((t) => `      ${t}`).join('\n')
           );
         }
         notes.push(`skin "${dir}": ${defined.size} tokens defined`);
@@ -124,7 +124,7 @@ export async function runChecks() {
       // leave; anything else is a real leak.
       if (/url\(/.test(line)) return;
       errors.push(
-        `${rel}:${i + 1}: colour literal outside src/skins/ — move it into the skin.\n      ${trimmed.slice(0, 110)}`,
+        `${rel}:${i + 1}: colour literal outside src/skins/ — move it into the skin.\n      ${trimmed.slice(0, 110)}`
       );
     });
   }

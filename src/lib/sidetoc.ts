@@ -21,9 +21,7 @@
 /** Height of the chrome above the article, when that chrome is pinned. */
 function chromeTop(): number {
   let top = 0;
-  for (const el of Array.from(
-    document.querySelectorAll<HTMLElement>('.ticker, .masthead'),
-  )) {
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>('.ticker, .masthead'))) {
     const cs = getComputedStyle(el);
     if (cs.position !== 'fixed' && cs.position !== 'sticky') continue;
     if (cs.display === 'none' || cs.visibility === 'hidden') continue;
@@ -57,8 +55,7 @@ export function initSideToc(): void {
   }
 
   const now = nav.querySelector<HTMLElement>('[data-sd-now]');
-  const textOf = (a: HTMLAnchorElement) =>
-    (a.querySelector('.sd-txt')?.textContent || '').trim();
+  const textOf = (a: HTMLAnchorElement) => (a.querySelector('.sd-txt')?.textContent || '').trim();
 
   let active = -1;
   let queued = 0;
@@ -101,7 +98,6 @@ export function initSideToc(): void {
       nav.dataset.at = String(next);
       if (now) now.textContent = textOf(targets[next].link);
     }
-
   };
 
   const queue = () => {

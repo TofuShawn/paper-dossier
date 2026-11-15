@@ -69,8 +69,8 @@ function makeSampler(variant: string, w: number, h: number): Sampler {
         const ground = v > horizon ? 0.76 + 0.24 * Math.sin(u * 7.1 + 1.4) : 0;
 
         const bank =
-          Math.exp(-(((u - 0.3) ** 2) * 7 + ((v - 0.46) ** 2) * 90)) * 0.5 +
-          Math.exp(-(((u - 0.52) ** 2) * 14 + ((v - 0.38) ** 2) * 140)) * 0.34;
+          Math.exp(-((u - 0.3) ** 2 * 7 + (v - 0.46) ** 2 * 90)) * 0.5 +
+          Math.exp(-((u - 0.52) ** 2 * 14 + (v - 0.38) ** 2 * 140)) * 0.34;
 
         const sky = 0.06 + 0.1 * clamp01(1 - v / horizon);
 
@@ -264,7 +264,7 @@ function initToc() {
         mark();
       });
     },
-    { passive: true },
+    { passive: true }
   );
 
   mark();
@@ -344,9 +344,7 @@ const STAGGER_DUR = 620;
 function release(group: HTMLElement) {
   group.classList.remove('in');
   delete group.dataset.stag;
-  Array.from(group.children).forEach((kid) =>
-    (kid as HTMLElement).style.removeProperty('--i'),
-  );
+  Array.from(group.children).forEach((kid) => (kid as HTMLElement).style.removeProperty('--i'));
 }
 
 /**
@@ -369,7 +367,7 @@ function initStagger() {
   const armed: Array<{ el: HTMLElement; fire: () => void }> = [];
 
   const groups = Array.from(document.querySelectorAll<HTMLElement>(STAGGER_GROUPS)).filter(
-    (g) => g.children.length > 0,
+    (g) => g.children.length > 0
   );
 
   groups.forEach((group) => {

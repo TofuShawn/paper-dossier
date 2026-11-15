@@ -70,7 +70,9 @@ const PAGES = {
 const CHROME_CANDIDATES = [
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  process.env.LOCALAPPDATA ? join(process.env.LOCALAPPDATA, 'Google/Chrome/Application/chrome.exe') : '',
+  process.env.LOCALAPPDATA
+    ? join(process.env.LOCALAPPDATA, 'Google/Chrome/Application/chrome.exe')
+    : '',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/usr/bin/google-chrome',
   '/usr/bin/chromium',
@@ -102,7 +104,8 @@ async function list() {
   const rows = [];
   for (const f of files) {
     const src = await readFile(join(SCRIPTS, f), 'utf8');
-    const title = (src.match(/<title>([^<]*)<\/title>/) || [, ''])[1].trim();
+    const titleMatch = src.match(/<title>([^<]*)<\/title>/);
+    const title = titleMatch ? titleMatch[1].trim() : '';
     rows.push({
       file: f,
       title,
@@ -120,8 +123,10 @@ async function list() {
     `\n${rows.length} probes. ${rows.filter((r) => r.hash).length} take a page out of the URL hash.` +
       `\nProbes print either <pre id="out"> text or a RESULT: JSON blob — both are just printed.` +
       '\nRun one:  node scripts/probe.mjs <name>   (add --page <route> for a target)' +
-      `\nRoutes:   ${Object.entries(PAGES).map(([k, v]) => `${k}=${v}`).join('  ')}` +
-      '\nCatalogue: docs/PROBES.md',
+      `\nRoutes:   ${Object.entries(PAGES)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('  ')}` +
+      '\nCatalogue: docs/PROBES.md'
   );
 }
 
@@ -131,7 +136,9 @@ function serve(dir) {
   return new Promise((resolve) => {
     const server = createServer(async (req, res) => {
       const clean = decodeURIComponent((req.url ?? '/').split('?')[0].split('#')[0]);
-      const rel = normalize(clean).replace(/^(\.\.[/\\])+/, '').replace(/^[/\\]+/, '');
+      const rel = normalize(clean)
+        .replace(/^(\.\.[/\\])+/, '')
+        .replace(/^[/\\]+/, '');
       const base = join(dir, rel);
       let file = null;
       for (const candidate of [base, join(base, 'index.html'), `${base}.html`]) {
@@ -169,8 +176,8 @@ function findChrome() {
   if (!hit) {
     console.error(
       'No Chrome or Chromium found. Set one of the expected install paths, or run the\n' +
-        "probe yourself: copy it into dist/, serve dist/, open the page, read <pre id=\"out\">.\n" +
-        'The probes are iframe harnesses, so they must be served from the site root.',
+        'probe yourself: copy it into dist/, serve dist/, open the page, read <pre id="out">.\n' +
+        'The probes are iframe harnesses, so they must be served from the site root.'
     );
     process.exit(2);
   }
@@ -253,7 +260,7 @@ async function main() {
   // Passing it a bare route silently measures nothing and prints "running…".
   const wantsArray = existsSync(join(SCRIPTS, `${name}.html`))
     ? (await readFile(join(SCRIPTS, `${name}.html`), 'utf8')).includes(
-        'JSON.parse(decodeURIComponent(location.hash',
+        'JSON.parse(decodeURIComponent(location.hash'
       )
     : false;
   if (wantsArray) {
@@ -295,7 +302,7 @@ async function main() {
     console.error(
       `Probe produced no output. It may need a target page:\n` +
         `  node scripts/probe.mjs ${name} --page home\n` +
-        `Or it may have failed — add --raw to see the whole DOM.`,
+        `Or it may have failed — add --raw to see the whole DOM.`
     );
     process.exit(1);
   }

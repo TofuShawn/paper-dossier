@@ -25,29 +25,36 @@ const f = featuresOf('paper');
 const showSeal = seal && f.unseal;
 ---
 
-{
-  showSeal && (
-    <div class="paper-seal" id="paper-seal" data-ceremony role="dialog" aria-label="Open the archive">
-      <div class="paper-seal-panel">
-        <p class="paper-seal-kicker">Frontispiece</p>
-        <p class="paper-seal-word">{SITE.title}</p>
-        <p class="paper-seal-meta">{SITE.subtitle}</p>
-        <div class="paper-seal-bar" aria-hidden="true">
-          <i />
-        </div>
-        <button class="paper-seal-btn" type="button" aria-label="Turn the page and open the archive">
-          Turn the page
-        </button>
-        <p class="paper-seal-note">Enter or click to open · skip with ?skip=1</p>
+{showSeal && (
+  <div class="paper-seal" id="paper-seal" data-ceremony role="dialog" aria-label="Open the archive">
+    <div class="paper-seal-panel">
+      <p class="paper-seal-kicker">Frontispiece</p>
+      <p class="paper-seal-word">{SITE.title}</p>
+      <p class="paper-seal-meta">{SITE.subtitle}</p>
+      <div class="paper-seal-bar" aria-hidden="true">
+        <i />
       </div>
+      <button class="paper-seal-btn" type="button" aria-label="Turn the page and open the archive">
+        Turn the page
+      </button>
+      <p class="paper-seal-note">Enter or click to open · skip with ?skip=1</p>
     </div>
-  )
-}
+  </div>
+)}
 
 <div class="rail" data-rail aria-hidden="true">
-  <div class="rail-ticks"><i /><i /><i /><i /><i /><i /></div>
+  <div class="rail-ticks">
+    <i />
+    <i />
+    <i />
+    <i />
+    <i />
+    <i />
+  </div>
   <div class="rail-thumb" data-rail-thumb>
-    <b class="rail-pct"><span data-rail-pct>000</span></b>
+    <b class="rail-pct">
+      <span data-rail-pct>000</span>
+    </b>
   </div>
 </div>
 
@@ -55,17 +62,13 @@ const showSeal = seal && f.unseal;
   import './client';
 </script>
 
-{
-  showSeal && (
-    <script is:inline>
-      // If the client bundle never loads, the ceremony must not trap the page.
-      setTimeout(function () {
-        var o = document.getElementById('paper-seal');
-        if (o && !o.classList.contains('off')) {
-          o.classList.add('off');
-          document.body.classList.remove('locked');
-        }
-      }, 8000);
-    </script>
-  )
-}
+{showSeal && <script is:inline>
+  // If the client bundle never loads, the ceremony must not trap the page.
+  setTimeout(function () {
+    const o = document.getElementById('paper-seal');
+    if (o && !o.classList.contains('off')) {
+      o.classList.add('off');
+      document.body.classList.remove('locked');
+    }
+  }, 8000);
+</script>}
