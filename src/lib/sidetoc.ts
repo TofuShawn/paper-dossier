@@ -152,7 +152,10 @@ export function initSideToc(): void {
     try {
       el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
     } catch {
-      el = null;
+      // A malformed fragment (`#%`) makes `decodeURIComponent` throw. That is
+      // not a reason to break the page: `el` keeps its initial `null` and the
+      // guard below returns. Assigning `null` here again would be dead code,
+      // which is what `no-useless-assignment` (eslint 10) flags.
     }
     if (!el) return;
     // `html { scroll-behavior: smooth }` turns every anchor jump into an
