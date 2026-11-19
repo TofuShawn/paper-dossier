@@ -5,7 +5,7 @@
 # ---------------------------------------------------------------------------
 # Node 24 is the floor, not a preference: Astro 7 needs >= 22.23.4, and the
 # 22.x alpine tag still resolves below that.
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 
 WORKDIR /app
 ENV ASTRO_TELEMETRY_DISABLED=1
