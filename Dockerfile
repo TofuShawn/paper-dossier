@@ -3,8 +3,10 @@
 # ---------------------------------------------------------------------------
 # build — Astro renders the whole site to static files
 # ---------------------------------------------------------------------------
-# Node 24 is the floor, not a preference: Astro 7 needs >= 22.23.4, and the
-# 22.x alpine tag still resolves below that.
+# Node 26 is what CI pins too (`.github/workflows/verify.yml`). Keeping the two
+# in lockstep is deliberate: a CI failure should be reproducible in the image
+# that ships. Astro 7 itself only needs >= 22.23.4, so this is the tested
+# version rather than a floor.
 FROM node:26-alpine AS build
 
 WORKDIR /app

@@ -107,7 +107,7 @@ docker compose up --build     # http://localhost:4322  ← the intended path
 npm run verify:docker         # asserts what the *server* actually returns
 ```
 
-Two-stage image: `node:24-alpine` builds, `nginx:alpine` serves. 94MB, read-only
+Two-stage image: `node:26-alpine` builds, `nginx:alpine` serves. 94MB, read-only
 container, gzip on, immutable caching for `/_astro/*`, prerendered 404, relative
 redirects.
 
